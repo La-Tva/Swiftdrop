@@ -1,21 +1,22 @@
 import type { NextAuthConfig } from "next-auth";
 
-// Edge-safe config: no Node.js modules (no bcrypt, no MongoDB)
-// Used by middleware only
 export const authConfig = {
-    pages: { signIn: "/", error: "/" },
-    session: { strategy: "jwt" as const },
+    pages: {
+        signIn: "/login",
+    },
     callbacks: {
-        authorized({ auth, request }) {
+        authorized({ auth, request: { nextUrl } }) {
             const isLoggedIn = !!auth?.user;
-            const isDashboard = request.nextUrl.pathname.startsWith("/dashboard");
-            if (isDashboard && !isLoggedIn) return false;
+            const isDashboard = nextUrl.pathname.startsWith("/main") || nextUrl.pathname.startsWith("/dashboard");
+
+            if (isDashboard) {
+                if (isLoggedIn) return true;
+                return false; // Redirect to login
+            }
             return true;
         },
         jwt({ token, user }) {
-            if (user?.id) {
-                token.id = user.id;
-            }
+            if (user) token.id = user.id;
             return token;
         },
         session({ session, token }) {
@@ -25,5 +26,5 @@ export const authConfig = {
             return session;
         },
     },
-    providers: [],
+    providers: [], // Configured in auth.ts
 } satisfies NextAuthConfig;

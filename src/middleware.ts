@@ -1,10 +1,9 @@
 import NextAuth from "next-auth";
 import { authConfig } from "@/auth.config";
 
-// Middleware uses only the edge-safe config (no bcrypt, no MongoDB)
-const { auth } = NextAuth(authConfig);
-export default auth;
+export default NextAuth(authConfig).auth;
 
 export const config = {
-    matcher: ["/dashboard/:path*"],
+    // Only target the main routes for protection
+    matcher: ["/main/:path*", "/dashboard/:path*", "/profile/:path*"],
 };

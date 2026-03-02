@@ -1,49 +1,39 @@
-import { MongoClient, Db, GridFSBucket } from "mongodb";
-import type { User, Account, SessionDoc, VerificationToken, Space, Folder, FileDoc } from "@/types/models";
+import { MongoClient, Db } from "mongodb";
 
-const uri = process.env.DATABASE_URL ?? "mongodb://placeholder";
+const uri = process.env.DATABASE_URL!;
 const options = {};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
 
-declare global {
-    // eslint-disable-next-line no-var
-    var _mongoClientPromise: Promise<MongoClient> | undefined;
-}
-
 if (process.env.NODE_ENV === "development") {
-    if (!global._mongoClientPromise) {
+    let globalWithMongo = global as typeof globalThis & {
+        _mongoClientPromise?: Promise<MongoClient>;
+    };
+
+    if (!globalWithMongo._mongoClientPromise) {
         client = new MongoClient(uri, options);
-        global._mongoClientPromise = client.connect();
+        globalWithMongo._mongoClientPromise = client.connect();
     }
-    clientPromise = global._mongoClientPromise;
+    clientPromise = globalWithMongo._mongoClientPromise;
 } else {
     client = new MongoClient(uri, options);
     clientPromise = client.connect();
 }
 
-export { clientPromise };
+export default clientPromise;
 
 export async function getDb(): Promise<Db> {
-    const c = await clientPromise;
-    return c.db("swiftdrop");
-}
-
-export async function getGridFSBucket() {
-    const db = await getDb();
-    return new GridFSBucket(db, { bucketName: "files" });
+    const client = await clientPromise;
+    return client.db("swiftdrop");
 }
 
 export async function getCollections() {
     const db = await getDb();
     return {
-        users: db.collection<User>("users"),
-        accounts: db.collection<Account>("accounts"),
-        sessions: db.collection<SessionDoc>("sessions"),
-        verificationTokens: db.collection<VerificationToken>("verification_tokens"),
-        spaces: db.collection<Space>("spaces"),
-        folders: db.collection<Folder>("folders"),
-        files: db.collection<FileDoc>("files"),
+        users: db.collection("users"),
+        spaces: db.collection("spaces"),
+        files: db.collection("files"),
+        folders: db.collection("folders"),
     };
 }

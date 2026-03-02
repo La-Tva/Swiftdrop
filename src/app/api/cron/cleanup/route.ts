@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCollections } from "@/lib/db";
-import { deleteFromR2 } from "@/lib/r2";
+import { deleteFromBlob } from "@/lib/blob";
 
 export async function GET(req: NextRequest) {
     const secret = req.headers.get("authorization")?.replace("Bearer ", "");
@@ -16,7 +16,8 @@ export async function GET(req: NextRequest) {
 
     if (expired.length === 0) return NextResponse.json({ deleted: 0 });
 
-    await Promise.allSettled(expired.map((f) => deleteFromR2(f.key)));
+    // Delete from Vercel Blob using the stored URL
+    await Promise.allSettled(expired.map((f) => deleteFromBlob(f.url)));
     await files.deleteMany({ _id: { $in: expired.map((f) => f._id) } });
 
     console.log(`[CRON] Deleted ${expired.length} expired files`);

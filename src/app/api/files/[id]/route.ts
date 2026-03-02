@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { getCollections } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { triggerSpaceEvent } from "@/lib/pusher-server";
-import { deleteFromR2 } from "@/lib/r2";
+import { deleteFromBlob } from "@/lib/blob";
 import { serializeFile } from "@/types/models";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -51,7 +51,8 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    await Promise.all([deleteFromR2(file.key), files.deleteOne({ _id: fileId })]);
+    // Delete from Vercel Blob using the URL
+    await Promise.all([deleteFromBlob(file.url), files.deleteOne({ _id: fileId })]);
     await triggerSpaceEvent(file.spaceId.toString(), "file:deleted", { id });
     return NextResponse.json({ success: true });
 }

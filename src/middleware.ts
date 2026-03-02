@@ -1,20 +1,8 @@
-import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "@/auth.config";
 
-export async function middleware(request: NextRequest) {
-    const session = await auth();
-    const { pathname } = request.nextUrl;
-
-    // Protect dashboard routes
-    if (pathname.startsWith("/dashboard")) {
-        if (!session) {
-            return NextResponse.redirect(new URL("/", request.url));
-        }
-    }
-
-    return NextResponse.next();
-}
+// Middleware uses only the edge-safe config (no bcrypt, no MongoDB)
+export const { auth: middleware } = NextAuth(authConfig);
 
 export const config = {
     matcher: ["/dashboard/:path*"],

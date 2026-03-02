@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCollections } from "@/lib/db";
-import { deleteFileFromR2 } from "@/lib/r2";
+import { getCollections, getGridFSBucket } from "@/lib/db";
+import { ObjectId } from "mongodb";
 
 export async function GET(req: NextRequest) {
     const secret = req.headers.get("authorization")?.replace("Bearer ", "");
@@ -9,6 +9,8 @@ export async function GET(req: NextRequest) {
     }
 
     const { files } = await getCollections();
+    const bucket = await getGridFSBucket();
+
     const expired = await files.find({
         isEphemeral: true,
         expiresAt: { $lt: new Date() },
@@ -16,10 +18,19 @@ export async function GET(req: NextRequest) {
 
     if (expired.length === 0) return NextResponse.json({ deleted: 0 });
 
-    // Delete from Cloudflare R2 using the stored key
-    await Promise.allSettled(expired.map((f) => deleteFileFromR2(f.key)));
+    // Delete from MongoDB GridFS using the stored key
+    for (const file of expired) {
+        if (file.key) {
+            try {
+                await bucket.delete(new ObjectId(file.key));
+            } catch (err) {
+                console.error("GridFS cleanup error:", err);
+            }
+        }
+    }
+
     await files.deleteMany({ _id: { $in: expired.map((f) => f._id) } });
 
-    console.log(`[CRON] Deleted ${expired.length} expired files from R2`);
+    console.log(`[CRON] Deleted ${expired.length} expired files from GridFS`);
     return NextResponse.json({ deleted: expired.length });
 }

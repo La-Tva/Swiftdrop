@@ -1,4 +1,4 @@
-import { MongoClient, Db } from "mongodb";
+import { MongoClient, Db, GridFSBucket } from "mongodb";
 import type { User, Account, SessionDoc, VerificationToken, Space, Folder, FileDoc } from "@/types/models";
 
 const uri = process.env.DATABASE_URL ?? "mongodb://placeholder";
@@ -28,6 +28,11 @@ export { clientPromise };
 export async function getDb(): Promise<Db> {
     const c = await clientPromise;
     return c.db("swiftdrop");
+}
+
+export async function getGridFSBucket() {
+    const db = await getDb();
+    return new GridFSBucket(db, { bucketName: "files" });
 }
 
 export async function getCollections() {

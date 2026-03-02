@@ -23,25 +23,16 @@ export function useFileUpload({ spaceId, folderId }: UseFileUploadOptions) {
             setUploadingFiles((prev) => [...prev, { id: tempId, name: file.name, progress: 0 }]);
 
             try {
-                // 1. Get presigned URL
-                const presignRes = await fetch("/api/upload/presign", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        filename: file.name,
-                        contentType: file.type,
-                        spaceId,
-                    }),
-                });
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("spaceId", spaceId);
+                if (folderId) formData.append("folderId", folderId);
+                formData.append("isEphemeral", "false"); // Default to false for manual uploads
 
-                if (!presignRes.ok) throw new Error("Failed to get upload URL");
-                const { uploadUrl, key } = await presignRes.json();
-
-                // 2. Upload directly to S3/R2 with XHR to track progress
+                // Upload to our GridFS API with progress tracking
                 await new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
-                    xhr.open("PUT", uploadUrl);
-                    xhr.setRequestHeader("Content-Type", file.type);
+                    xhr.open("POST", "/api/files/upload");
 
                     xhr.upload.onprogress = (e) => {
                         if (e.lengthComputable) {
@@ -52,26 +43,17 @@ export function useFileUpload({ spaceId, folderId }: UseFileUploadOptions) {
                         }
                     };
 
-                    xhr.onload = () => (xhr.status === 200 ? resolve(null) : reject(new Error("Upload failed")));
+                    xhr.onload = () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            resolve(JSON.parse(xhr.responseText));
+                        } else {
+                            reject(new Error("Upload failed"));
+                        }
+                    };
+
                     xhr.onerror = () => reject(new Error("Network error"));
-                    xhr.send(file);
+                    xhr.send(formData);
                 });
-
-                // 3. Confirm upload in DB
-                const confirmRes = await fetch("/api/upload/confirm", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name: file.name,
-                        size: file.size,
-                        type: file.type,
-                        key,
-                        spaceId,
-                        folderId,
-                    }),
-                });
-
-                if (!confirmRes.ok) throw new Error("Failed to confirm upload");
 
                 toast.success(`${file.name} uploaded successfully`);
             } catch (err) {
@@ -89,8 +71,10 @@ export function useFileUpload({ spaceId, folderId }: UseFileUploadOptions) {
     const uploadFiles = useCallback(
         (files: File[]) => {
             files.forEach((f) => {
-                if (f.size > 5 * 1024 * 1024 * 1024) {
-                    toast.error(`${f.name} exceeds 5GB limit`);
+                // Reduced limit for MongoDB Atlas Free (512MB total cluster space)
+                // We'll set a 50MB per file soft limit for images to be safe
+                if (f.size > 50 * 1024 * 1024) {
+                    toast.error(`${f.name} exceeds 50MB limit (Atlas Free Tier)`);
                     return;
                 }
                 uploadFile(f);

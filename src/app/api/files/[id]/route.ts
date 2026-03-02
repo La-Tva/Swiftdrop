@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { getCollections } from "@/lib/db";
+import { getCollections, getGridFSBucket } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { triggerSpaceEvent } from "@/lib/pusher-server";
-import { deleteFromBlob } from "@/lib/blob";
 import { serializeFile } from "@/types/models";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -42,6 +41,8 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
 
     const { id } = await params;
     const { files, spaces } = await getCollections();
+    const bucket = await getGridFSBucket();
+
     const fileId = new ObjectId(id);
     const file = await files.findOne({ _id: fileId });
     if (!file) return NextResponse.json({ error: "Not found" }, { status: 404 });
@@ -51,8 +52,16 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    // Delete from Vercel Blob using the URL
-    await Promise.all([deleteFromBlob(file.url), files.deleteOne({ _id: fileId })]);
+    // Delete from GridFS using the key (which is the GridFS ObjectId)
+    if (file.key) {
+        try {
+            await bucket.delete(new ObjectId(file.key));
+        } catch (err) {
+            console.error("GridFS delete error (might already be gone):", err);
+        }
+    }
+
+    await files.deleteOne({ _id: fileId });
     await triggerSpaceEvent(file.spaceId.toString(), "file:deleted", { id });
     return NextResponse.json({ success: true });
 }

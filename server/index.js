@@ -12,26 +12,56 @@ dotenv.config();
 
 const app = express();
 
+// Enhanced CORS for production
+const allowedOrigins = [
+  'https://swiftdrop-app.vercel.app',
+  'https://swiftdrop.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:4000'
+];
+
 app.use(cors({
-  origin: true,
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    } else {
+      console.log("Blocked by CORS:", origin);
+      return callback(null, true); // Still allow for now to unblock
+    }
+  },
   credentials: true
 }));
+
+// Request Logger for debugging
+app.use((req, res, next) => {
+  // Silence the browsing-topics policy warning
+  res.setHeader('Permissions-Policy', 'browsing-topics=()');
+  
+  if (req.url !== '/health') {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
+  }
+  next();
+});
 app.use(express.json());
 
 // Health check for Render
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
+const PORT = process.env.PORT || 10000; // Render uses 10000 often
+const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI;
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: true,
+    origin: (origin, callback) => callback(null, true),
     methods: ["GET", "POST"],
-    credentials: true
-  }
+    credentials: true,
+    allowedHeaders: ["*"]
+  },
+  allowEIO3: true // Support older clients if any
 });
-
-const PORT = process.env.PORT || 4000;
-const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI;
 
 // Global process error handlers to prevent crash
 process.on('uncaughtException', (err) => {

@@ -1,4 +1,5 @@
 import io from "socket.io-client"
+import { SOCKET_URL } from "@/lib/constants";
 
 const defaultProfilePicture = '/default_profile_picture.png';
 
@@ -17,7 +18,7 @@ class CanalSocketio {
 
         // Connect to the backend using the environment variable or fallback to localhost
         this.socket = io(
-            process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:4000",
+            SOCKET_URL,
             {
                 autoConnect: true,
                 reconnection: true,

@@ -24,6 +24,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { io } from "socket.io-client";
+import { LivingLogo, PulseIndicator } from "@/components/Animations";
 
 interface UploadingFile {
     id: string;
@@ -145,9 +146,7 @@ export function DashboardLayout({
             <aside className="w-72 bg-white border-r border-[#E5E5E5] flex flex-col relative z-20 hidden lg:flex">
                 <div className="p-8">
                     <Link href="/main" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center transition-transform group-hover:scale-105">
-                            <Upload className="w-5 h-5 text-white" />
-                        </div>
+                        <LivingLogo />
                         <span className="text-xl font-serif italic tracking-tight lowercase">swiftdrop <span className="text-slate-400 font-sans not-italic text-xs ml-1">v2</span></span>
                     </Link>
                 </div>
@@ -164,10 +163,13 @@ export function DashboardLayout({
                             <Link 
                                 key={i} 
                                 href={item.href}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group ${isActive ? 'bg-black text-white' : 'text-[#666666] hover:text-black hover:bg-[#F5F5F5]'}`}
+                                className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all group ${isActive ? 'bg-black text-white' : 'text-[#666666] hover:text-black hover:bg-[#F5F5F5]'}`}
                             >
-                                <item.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#CCCCCC] group-hover:text-black'}`} />
-                                <span className={`text-sm tracking-tight ${isActive ? 'font-bold' : 'font-medium'}`}>{item.label}</span>
+                                <div className="flex items-center gap-3">
+                                    <item.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#CCCCCC] group-hover:text-black'}`} />
+                                    <span className={`text-sm tracking-tight ${isActive ? 'font-bold' : 'font-medium'}`}>{item.label}</span>
+                                </div>
+                                {isActive && <PulseIndicator />}
                             </Link>
                         );
                     })}
@@ -199,9 +201,14 @@ export function DashboardLayout({
                         <Link 
                             key={i} 
                             href={item.href}
-                            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isActive ? 'bg-black text-white scale-110 shadow-lg shadow-black/20' : 'text-[#CCCCCC]'}`}
+                            className={`w-12 h-12 rounded-2xl flex flex-col items-center justify-center transition-all relative ${isActive ? 'bg-black text-white scale-110 shadow-lg shadow-black/20' : 'text-[#CCCCCC]'}`}
                         >
                             <item.icon className={`w-5 h-5`} />
+                            {isActive && (
+                                <div className="absolute -top-1 right-0">
+                                    <PulseIndicator />
+                                </div>
+                            )}
                         </Link>
                     );
                 })}
@@ -212,8 +219,8 @@ export function DashboardLayout({
                 {/* Global Header */}
                 <header className="h-20 lg:h-24 px-8 border-b border-[#E5E5E5] flex items-center justify-between relative z-10 bg-white/80 backdrop-blur-md">
                     <div className="flex items-center gap-4 lg:hidden">
-                         <Link href="/main" className="w-8 h-8 rounded-lg bg-black flex items-center justify-center">
-                            <Upload className="w-4 h-4 text-white" />
+                         <Link href="/main">
+                            <LivingLogo />
                          </Link>
                     </div>
 

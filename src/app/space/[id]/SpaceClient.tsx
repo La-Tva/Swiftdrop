@@ -8,7 +8,7 @@ import { CreateModal } from "@/components/CreateModal";
 import { RENDER_BACKEND_URL } from "@/lib/constants";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnimatedEmptyState } from "@/components/Animations";
+import { AnimatedEmptyState, FolderTab, FileCorner } from "@/components/Animations";
 
 export function SpaceClient({ 
     userId, 
@@ -216,9 +216,10 @@ export function SpaceClient({
                         }}
                         whileHover={{ y: -4 }}
                         onClick={() => handleFolderClick(folder._id)}
-                        className="p-8 rounded-[2rem] border border-[#EEEEEE] bg-[#FDFDFD] hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
+                        className="p-8 rounded-[2rem] border border-[#EEEEEE] bg-[#F5F5F5] hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full overflow-hidden"
                     >
-                        <div className="flex-1 min-w-0">
+                        <FolderTab />
+                        <div className="flex-1 min-w-0 relative z-10">
                             <h3 className="text-base font-serif italic truncate group-hover:text-black transition-colors">{folder.name}</h3>
                             <div className="flex items-center gap-2 mt-1">
                                 <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">Dossier</p>
@@ -265,9 +266,10 @@ export function SpaceClient({
                         }}
                         whileHover={{ y: -4 }}
                         onClick={() => handleFileClick(file)}
-                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
+                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full overflow-hidden"
                     >
-                        <div className="min-w-0 pr-8">
+                        <FileCorner />
+                        <div className="min-w-0 pr-8 relative z-10">
                             <h3 className="text-base font-sans font-bold truncate group-hover:text-black transition-colors">{file.name}</h3>
                             <div className="flex items-center gap-2 mt-1">
                                 <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">

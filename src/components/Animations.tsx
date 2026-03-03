@@ -88,6 +88,99 @@ export function AnimatedEmptyState({ type = "folder" }: { type?: "folder" | "fil
   );
 }
 
+export function PulseIndicator() {
+  return (
+    <div className="relative w-2 h-2">
+      <motion.div
+        animate={{ scale: [1, 1.8], opacity: [0.8, 0] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+        className="absolute inset-0 bg-black rounded-full"
+      />
+      <div className="relative w-full h-full bg-black rounded-full" />
+    </div>
+  );
+}
+
+export function LivingLogo() {
+  return (
+    <div className="relative w-8 h-8 md:w-10 md:h-10 rounded-xl bg-black flex items-center justify-center overflow-hidden group">
+      <motion.div
+        animate={{
+          y: [0, -2, 0],
+        }}
+        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="white"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <motion.path
+            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
+          />
+          <motion.polyline
+            points="17 8 12 3 7 8"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1, delay: 0.5 }}
+          />
+          <motion.line
+            x1="12" y1="3" x2="12" y2="15"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{ duration: 1, delay: 0.8 }}
+          />
+        </svg>
+      </motion.div>
+      <motion.div
+        className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity"
+        initial={false}
+        whileHover={{ x: ["-100%", "100%"] }}
+        transition={{ duration: 0.6 }}
+      />
+    </div>
+  );
+}
+
+export function FolderTab() {
+  return (
+    <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden rounded-[2rem]">
+      <svg className="absolute -top-[1px] -left-[1px]" width="60" height="20" viewBox="0 0 60 20" fill="none">
+        <path d="M0 0H40C45 0 45 12 50 12H60" stroke="#EEEEEE" strokeWidth="1" fill="none" />
+        <path d="M0 0V12H50" stroke="#EEEEEE" strokeWidth="1" fill="none" />
+        <motion.path
+          d="M5 6H25"
+          stroke="black"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          opacity="0.1"
+          animate={{ opacity: [0.1, 0.3, 0.1] }}
+          transition={{ duration: 3, repeat: Infinity }}
+        />
+      </svg>
+    </div>
+  );
+}
+
+export function FileCorner() {
+  return (
+    <div className="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden rounded-[2rem]">
+      <svg className="absolute top-0 right-0" width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <path d="M0 0H30V30L0 0Z" fill="#F9F9F9" opacity="0.5" />
+        <path d="M0 0H30V30" stroke="#E5E5E5" strokeWidth="1" />
+      </svg>
+    </div>
+  );
+}
+
 export function DecorativeWave() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 opacity-30">

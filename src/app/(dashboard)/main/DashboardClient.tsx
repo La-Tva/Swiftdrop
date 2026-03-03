@@ -21,7 +21,7 @@ import { SOCKET_URL, RENDER_BACKEND_URL } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { AnimatedEmptyState } from "@/components/Animations";
+import { AnimatedEmptyState, FolderTab, FileCorner } from "@/components/Animations";
 
 export function DashboardClient({ 
     userId, 
@@ -145,9 +145,10 @@ export function DashboardClient({
                         }}
                         whileHover={{ y: -4 }}
                         onClick={() => router.push(`/space/${file.spaceId}`)}
-                        className="p-6 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group"
+                        className="p-6 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group relative overflow-hidden"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all">
+                        <FileCorner />
+                        <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all relative z-10">
                             <Star className="w-4 h-4 fill-current" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -173,9 +174,10 @@ export function DashboardClient({
                         }}
                         whileHover={{ y: -4 }}
                         onClick={() => router.push(`/space/${file.spaceId}`)}
-                        className="p-6 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group"
+                        className="p-6 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group relative overflow-hidden"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all">
+                        <FileCorner />
+                        <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all relative z-10">
                             <Clock className="w-4 h-4" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -211,10 +213,11 @@ export function DashboardClient({
                   >
                     <Link 
                       href={`/space/${space._id}`} 
-                      className="p-8 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all group flex flex-col gap-8 relative overflow-hidden h-full"
+                      className="p-8 rounded-[2.5rem] border border-[#EEEEEE] bg-[#F8F8F8] hover:border-black transition-all group flex flex-col gap-8 relative overflow-hidden h-full"
                     >
-                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#F9F9F9] rounded-bl-full group-hover:bg-black/5 transition-colors -z-10" />
-                      <div className="flex items-start justify-between">
+                      <FolderTab />
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#F2F2F2] rounded-bl-full group-hover:bg-black/5 transition-colors -z-10" />
+                      <div className="flex items-start justify-between relative z-10">
                         <div className="w-14 h-14 rounded-2xl bg-[#F5F5F5] border border-[#E5E5E5] flex items-center justify-center text-[#666666] group-hover:bg-black group-hover:border-black group-hover:text-white transition-all">
                           <Folder className="w-6 h-6 fill-current opacity-40 group-hover:opacity-100" />
                         </div>

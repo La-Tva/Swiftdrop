@@ -181,6 +181,57 @@ export function FileCorner() {
   );
 }
 
+export function AnimatedSearchLoupe({ className }: { className?: string }) {
+  return (
+    <motion.div
+      className={className}
+      whileHover="hover"
+      initial="initial"
+    >
+      <svg
+        width="100%"
+        height="100%"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <motion.circle 
+            cx="11" cy="11" r="8" 
+            variants={{
+                initial: { rotate: 0, scale: 1 },
+                hover: { rotate: [0, -10, 10, 0], scale: 1.15 }
+            }}
+            transition={{ duration: 0.5 }}
+        />
+        <motion.path 
+            d="m21 21-4.3-4.3" 
+            variants={{
+                initial: { pathLength: 1 },
+                hover: { pathLength: [1, 0, 1] }
+            }}
+            transition={{ duration: 0.5 }}
+        />
+      </svg>
+    </motion.div>
+  );
+}
+
+export function InteractiveIconWrapper({ children, className }: { children: React.ReactNode, className?: string }) {
+    return (
+        <motion.div
+            className={`inline-flex items-center justify-center ${className || ''}`}
+            whileHover={{ scale: 1.12, rotate: [-5, 5, -5, 0] }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+        >
+            {children}
+        </motion.div>
+    );
+}
+
 export function DecorativeWave() {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10 opacity-30">

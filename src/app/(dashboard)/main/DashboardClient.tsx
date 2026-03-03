@@ -21,7 +21,7 @@ import { SOCKET_URL, RENDER_BACKEND_URL } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { AnimatedEmptyState, FolderTab, FileCorner } from "@/components/Animations";
+import { AnimatedEmptyState, FileCorner, FolderTab, InteractiveIconWrapper } from "@/components/Animations";
 
 export function DashboardClient({ 
     userId, 
@@ -149,7 +149,9 @@ export function DashboardClient({
                     >
                         <FileCorner />
                         <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all relative z-10">
-                            <Star className="w-4 h-4 fill-current" />
+                            <InteractiveIconWrapper>
+                                <Star className="w-4 h-4 fill-current" />
+                            </InteractiveIconWrapper>
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-sans font-bold truncate group-hover:text-black transition-colors">{file.name}</p>
@@ -178,7 +180,9 @@ export function DashboardClient({
                     >
                         <FileCorner />
                         <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all relative z-10">
-                            <Clock className="w-4 h-4" />
+                            <InteractiveIconWrapper>
+                                <Clock className="w-4 h-4" />
+                            </InteractiveIconWrapper>
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-sans font-bold truncate group-hover:text-black transition-colors">{file.name}</p>

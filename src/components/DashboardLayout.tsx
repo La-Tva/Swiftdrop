@@ -24,7 +24,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { io } from "socket.io-client";
-import { LivingLogo, PulseIndicator } from "@/components/Animations";
+import { LivingLogo, PulseIndicator, InteractiveIconWrapper } from "@/components/Animations";
 
 interface UploadingFile {
     id: string;
@@ -166,7 +166,9 @@ export function DashboardLayout({
                                 className={`flex items-center justify-between px-4 py-3 rounded-2xl transition-all group ${isActive ? 'bg-black text-white' : 'text-[#666666] hover:text-black hover:bg-[#F5F5F5]'}`}
                             >
                                 <div className="flex items-center gap-3">
-                                    <item.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#CCCCCC] group-hover:text-black'}`} />
+                                    <InteractiveIconWrapper>
+                                        <item.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#CCCCCC] group-hover:text-black'}`} />
+                                    </InteractiveIconWrapper>
                                     <span className={`text-sm tracking-tight ${isActive ? 'font-bold' : 'font-medium'}`}>{item.label}</span>
                                 </div>
                                 {isActive && <PulseIndicator />}
@@ -203,7 +205,9 @@ export function DashboardLayout({
                             href={item.href}
                             className={`w-12 h-12 rounded-2xl flex flex-col items-center justify-center transition-all relative ${isActive ? 'bg-black text-white scale-110 shadow-lg shadow-black/20' : 'text-[#CCCCCC]'}`}
                         >
-                            <item.icon className={`w-5 h-5`} />
+                            <InteractiveIconWrapper>
+                                <item.icon className={`w-5 h-5`} />
+                            </InteractiveIconWrapper>
                             {isActive && (
                                 <div className="absolute -top-1 right-0">
                                     <PulseIndicator />

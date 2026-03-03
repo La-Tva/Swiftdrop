@@ -1,14 +1,14 @@
 "use client";
  
-import { useState, useRef } from "react";
-import { Folder, File, ArrowLeft, Trash2, Plus, Download, Star, Upload, Edit3, Loader2, Search, X } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Folder, File, ArrowLeft, Trash2, Plus, Download, Star, Upload, Edit3, Loader2, Search, X, MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CreateModal } from "@/components/CreateModal";
 import { RENDER_BACKEND_URL } from "@/lib/constants";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnimatedEmptyState, FolderTab, FileCorner } from "@/components/Animations";
+import { AnimatedEmptyState, FolderTab, FileCorner, AnimatedSearchLoupe, InteractiveIconWrapper } from "@/components/Animations";
 
 export function SpaceClient({ 
     userId, 
@@ -29,6 +29,14 @@ export function SpaceClient({
     const [uploading, setUploading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFile, setSelectedFile] = useState<any>(null);
+    const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const handleClickOutside = () => setOpenDropdownId(null);
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
@@ -165,7 +173,7 @@ export function SpaceClient({
                 
                 <div className="flex-1 max-w-md hidden md:block">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#CCCCCC] group-focus-within:text-black transition-colors" />
+                        <AnimatedSearchLoupe className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-[#999999]" />
                         <input 
                             type="text" 
                             placeholder="Rechercher..." 
@@ -231,25 +239,39 @@ export function SpaceClient({
                                 )}
                             </div>
                         </div>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white backdrop-blur-md shadow-md shadow-black/5 p-1 rounded-full border border-[#E5E5E5]">
+                        <div className="absolute top-4 right-4 z-20">
                             <button 
-                                onClick={(e) => { e.stopPropagation(); handleToggleFavorite(folder._id, 'folder'); }}
-                                className={`p-2 rounded-full hover:bg-[#F5F5F5] ${folder.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
+                                onClick={(e) => { e.stopPropagation(); setOpenDropdownId(openDropdownId === folder._id ? null : folder._id); }}
+                                className={`p-2 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === folder._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
                             >
-                                <Star className={`w-3.5 h-3.5 ${folder.isFavorite ? 'fill-current' : ''}`} />
+                                <InteractiveIconWrapper>
+                                    <MoreHorizontal className="w-4 h-4" />
+                                </InteractiveIconWrapper>
                             </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleRename(folder._id, 'folder', folder.name); }}
-                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
-                            >
-                                <Edit3 className="w-3.5 h-3.5" />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleDelete(folder._id, 'folder'); }}
-                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
-                            >
-                                <Trash2 className="w-3.5 h-3.5" />
-                            </button>
+                            
+                            <AnimatePresence>
+                                {openDropdownId === folder._id && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                        transition={{ duration: 0.15 }}
+                                        className="absolute right-0 top-full mt-2 w-48 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-[#E5E5E5] flex flex-col overflow-hidden py-1 z-50 text-left"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <button onClick={(e) => { e.stopPropagation(); handleToggleFavorite(folder._id, 'folder'); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] transition-colors text-sm text-[#333333]">
+                                            <Star className={`w-4 h-4 ${folder.isFavorite ? 'fill-black' : ''}`} /> {folder.isFavorite ? 'Retirer' : 'Favori'}
+                                        </button>
+                                        <button onClick={(e) => { e.stopPropagation(); handleRename(folder._id, 'folder', folder.name); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] transition-colors text-sm text-[#333333]">
+                                            <Edit3 className="w-4 h-4" /> Renommer
+                                        </button>
+                                        <div className="h-px w-full bg-[#EEEEEE] my-1" />
+                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(folder._id, 'folder'); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 hover:text-red-500 transition-colors text-sm text-[#333333]">
+                                            <Trash2 className="w-4 h-4" /> Supprimer
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 ))}
@@ -287,31 +309,42 @@ export function SpaceClient({
                                 )}
                             </div>
                         </div>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white backdrop-blur-md shadow-md shadow-black/5 p-1 rounded-full border border-[#E5E5E5]">
+                        <div className="absolute top-4 right-4 z-20">
                             <button 
-                                onClick={(e) => { e.stopPropagation(); handleToggleFavorite(file._id, 'file'); }}
-                                className={`p-2 rounded-full hover:bg-[#F5F5F5] ${file.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
+                                onClick={(e) => { e.stopPropagation(); setOpenDropdownId(openDropdownId === file._id ? null : file._id); }}
+                                className={`p-2 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === file._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
                             >
-                                <Star className={`w-4 h-4 ${file.isFavorite ? 'fill-current' : ''}`} />
+                                <InteractiveIconWrapper>
+                                    <MoreHorizontal className="w-4 h-4" />
+                                </InteractiveIconWrapper>
                             </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleDownload(file._id); }}
-                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
-                            >
-                                <Download className="w-4 h-4" />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleRename(file._id, 'file', file.name); }}
-                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
-                            >
-                                <Edit3 className="w-4 h-4" />
-                            </button>
-                            <button 
-                                onClick={(e) => { e.stopPropagation(); handleDelete(file._id, 'file'); }}
-                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
-                            >
-                                <Trash2 className="w-4 h-4" />
-                            </button>
+                            
+                            <AnimatePresence>
+                                {openDropdownId === file._id && (
+                                    <motion.div 
+                                        initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                                        exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                        transition={{ duration: 0.15 }}
+                                        className="absolute right-0 top-full mt-2 w-48 bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl shadow-black/10 border border-[#E5E5E5] flex flex-col overflow-hidden py-1 z-50 text-left"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        <button onClick={(e) => { e.stopPropagation(); handleToggleFavorite(file._id, 'file'); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] transition-colors text-sm text-[#333333]">
+                                            <Star className={`w-4 h-4 ${file.isFavorite ? 'fill-black' : ''}`} /> {file.isFavorite ? 'Retirer' : 'Favori'}
+                                        </button>
+                                        <button onClick={(e) => { e.stopPropagation(); handleDownload(file._id); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] transition-colors text-sm text-[#333333]">
+                                            <Download className="w-4 h-4" /> Télécharger
+                                        </button>
+                                        <button onClick={(e) => { e.stopPropagation(); handleRename(file._id, 'file', file.name); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#F5F5F5] transition-colors text-sm text-[#333333]">
+                                            <Edit3 className="w-4 h-4" /> Renommer
+                                        </button>
+                                        <div className="h-px w-full bg-[#EEEEEE] my-1" />
+                                        <button onClick={(e) => { e.stopPropagation(); handleDelete(file._id, 'file'); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 hover:text-red-500 transition-colors text-sm text-[#333333]">
+                                            <Trash2 className="w-4 h-4" /> Supprimer
+                                        </button>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     </motion.div>
                 ))}

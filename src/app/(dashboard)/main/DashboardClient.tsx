@@ -178,7 +178,15 @@ export function DashboardClient({
                         </div>
                         <div className="flex-1 min-w-0">
                             <p className="text-sm font-bold truncate group-hover:text-black transition-colors">{file.name}</p>
-                            <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">{Math.round(file.size / 1024)} KB</p>
+                            <div className="flex items-center gap-2 mt-1">
+                                <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">{Math.round(file.size / 1024)} KB</p>
+                                {file.isFavorite && (
+                                    <>
+                                        <div className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
+                                        <Star className="w-3 h-3 text-black fill-current" />
+                                    </>
+                                )}
+                            </div>
                         </div>
                         <ChevronRight className="w-4 h-4 text-[#E5E5E5] group-hover:text-black group-hover:translate-x-1 transition-all" />
                     </motion.div>

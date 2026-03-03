@@ -219,7 +219,15 @@ export function SpaceClient({
                     >
                         <div className="flex-1 min-w-0">
                             <h3 className="text-base font-bold truncate group-hover:text-black transition-colors">{folder.name}</h3>
-                            <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest mt-1">Dossier</p>
+                            <div className="flex items-center gap-2 mt-1">
+                                <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">Dossier</p>
+                                {folder.isFavorite && (
+                                    <>
+                                        <div className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
+                                        <Star className="w-3 h-3 text-black fill-current" />
+                                    </>
+                                )}
+                            </div>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">
                             <button 
@@ -268,6 +276,12 @@ export function SpaceClient({
                                 <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">
                                     {file.type?.split('/')[1] || 'FILE'}
                                 </p>
+                                {file.isFavorite && (
+                                    <>
+                                        <div className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
+                                        <Star className="w-3 h-3 text-black fill-current" />
+                                    </>
+                                )}
                             </div>
                         </div>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">

@@ -126,6 +126,7 @@ export function DashboardLayout({
     });
 
     const handleLogout = async () => {
+        toast.success("Déconnexion réussie");
         await signOut({ callbackUrl: "/login" });
     };
 

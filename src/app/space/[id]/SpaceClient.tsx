@@ -47,6 +47,7 @@ export function SpaceClient({
                 body: JSON.stringify({ id, type })
             });
             router.refresh();
+            toast.success("Favoris mis à jour");
         } catch (err) {
             toast.error("Erreur lors de la mise en favori");
         }
@@ -88,6 +89,7 @@ export function SpaceClient({
                 body: JSON.stringify({ id, type, newName })
             });
             router.refresh();
+            toast.success("Renommé avec succès");
         } catch (err) {
             toast.error("Erreur de renommage");
         }

@@ -13,6 +13,7 @@ import {
   Star
 } from "lucide-react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { CreateModal } from "@/components/CreateModal";
 import { useEffect } from "react";
 import { io } from "socket.io-client";
@@ -123,11 +124,24 @@ export function DashboardClient({
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <motion.div 
+            layout
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: { transition: { staggerChildren: 0.05 } }
+            }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-6"
+          >
             {filterType === 'favorites' ? (
                 filteredRecent.filter(f => f.isFavorite).length > 0 ? filteredRecent.filter(f => f.isFavorite).map((file) => (
-                    <div 
+                    <motion.div 
                         key={file._id.toString()} 
+                        variants={{
+                          hidden: { y: 20, opacity: 0 },
+                          visible: { y: 0, opacity: 1 }
+                        }}
+                        whileHover={{ y: -4 }}
                         onClick={() => router.push(`/space/${file.spaceId}`)}
                         className="p-6 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group"
                     >
@@ -139,7 +153,7 @@ export function DashboardClient({
                             <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">Favori</p>
                         </div>
                         <ChevronRight className="w-4 h-4 text-[#E5E5E5] group-hover:text-black group-hover:translate-x-1 transition-all" />
-                    </div>
+                    </motion.div>
                 )) : (
                     <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem]">
                         <Star className="w-10 h-10 text-[#E5E5E5] mx-auto mb-4" />
@@ -149,8 +163,13 @@ export function DashboardClient({
                 )
             ) : filterType === 'recents' ? (
                 filteredRecent.length > 0 ? filteredRecent.map((file) => (
-                    <div 
+                    <motion.div 
                         key={file._id.toString()} 
+                        variants={{
+                          hidden: { y: 20, opacity: 0 },
+                          visible: { y: 0, opacity: 1 }
+                        }}
+                        whileHover={{ y: -4 }}
                         onClick={() => router.push(`/space/${file.spaceId}`)}
                         className="p-6 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group"
                     >
@@ -162,7 +181,7 @@ export function DashboardClient({
                             <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">{Math.round(file.size / 1024)} KB</p>
                         </div>
                         <ChevronRight className="w-4 h-4 text-[#E5E5E5] group-hover:text-black group-hover:translate-x-1 transition-all" />
-                    </div>
+                    </motion.div>
                 )) : (
                     <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem]">
                         <Clock className="w-10 h-10 text-[#E5E5E5] mx-auto mb-4" />
@@ -172,37 +191,45 @@ export function DashboardClient({
                 )
             ) : (
                 filteredSpaces.length > 0 ? filteredSpaces.map((space) => (
-                  <Link 
-                    href={`/space/${space._id}`} 
+                  <motion.div
                     key={space._id.toString()}
-                    className="p-8 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all group flex flex-col gap-8 relative overflow-hidden"
+                    variants={{
+                      hidden: { y: 20, opacity: 0 },
+                      visible: { y: 0, opacity: 1 }
+                    }}
+                    whileHover={{ y: -4 }}
                   >
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-[#F9F9F9] rounded-bl-full group-hover:bg-black/5 transition-colors -z-10" />
-                    <div className="flex items-start justify-between">
-                      <div className="w-14 h-14 rounded-2xl bg-[#F5F5F5] border border-[#E5E5E5] flex items-center justify-center text-[#666666] group-hover:bg-black group-hover:border-black group-hover:text-white transition-all">
-                        <Folder className="w-6 h-6 fill-current opacity-40 group-hover:opacity-100" />
+                    <Link 
+                      href={`/space/${space._id}`} 
+                      className="p-8 rounded-[2.5rem] border border-[#E5E5E5] bg-white hover:border-black transition-all group flex flex-col gap-8 relative overflow-hidden h-full"
+                    >
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#F9F9F9] rounded-bl-full group-hover:bg-black/5 transition-colors -z-10" />
+                      <div className="flex items-start justify-between">
+                        <div className="w-14 h-14 rounded-2xl bg-[#F5F5F5] border border-[#E5E5E5] flex items-center justify-center text-[#666666] group-hover:bg-black group-hover:border-black group-hover:text-white transition-all">
+                          <Folder className="w-6 h-6 fill-current opacity-40 group-hover:opacity-100" />
+                        </div>
+                        {!space.isGlobal && (
+                            <button 
+                                onClick={(e) => handleDeleteSpace(e, space._id)}
+                                className="p-2 text-[#E5E5E5] hover:text-red-500 transition-colors"
+                                title="Supprimer"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
+                        )}
                       </div>
-                      {!space.isGlobal && (
-                          <button 
-                              onClick={(e) => handleDeleteSpace(e, space._id)}
-                              className="p-2 text-[#E5E5E5] hover:text-red-500 transition-colors"
-                              title="Supprimer"
-                          >
-                              <Trash2 className="w-4 h-4" />
-                          </button>
-                      )}
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold group-hover:text-black transition-colors">{space.name}</h3>
-                      <div className="flex items-center gap-2 mt-1">
-                        <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest" suppressHydrationWarning>
-                            {new Date(space.createdAt).toLocaleDateString()}
-                        </p>
-                        <div className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
-                        <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">ID: {space._id.substring(space._id.length - 4)}</p>
+                      <div>
+                        <h3 className="text-xl font-bold group-hover:text-black transition-colors">{space.name}</h3>
+                        <div className="flex items-center gap-2 mt-1">
+                          <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest" suppressHydrationWarning>
+                              {new Date(space.createdAt).toLocaleDateString()}
+                          </p>
+                          <div className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
+                          <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">ID: {space._id.substring(space._id.length - 4)}</p>
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                  </motion.div>
                 )) : (
                   <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem] flex flex-col items-center justify-center gap-4">
                     <Folder className="w-10 h-10 text-[#E5E5E5]" />
@@ -213,19 +240,31 @@ export function DashboardClient({
                   </div>
                 )
             )}
-          </div>
+          </motion.div>
         </section>
 
         {/* Activity Sidebar */}
         <aside className="space-y-8 bg-[#FDFDFD] p-8 rounded-[2.5rem] border border-[#F5F5F5]">
           <h2 className="text-2xl font-serif italic tracking-tight">Récents</h2>
           
-          <div className="space-y-6">
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={{
+              visible: { transition: { staggerChildren: 0.05 } }
+            }}
+            className="space-y-6"
+          >
             {filteredRecent.length > 0 ? filteredRecent.map((file) => (
-              <div 
+              <motion.div 
                 key={file._id.toString()} 
+                variants={{
+                  hidden: { x: 20, opacity: 0 },
+                  visible: { x: 0, opacity: 1 }
+                }}
+                whileHover={{ x: 4 }}
                 onClick={() => router.push(`/space/${file.spaceId}`)}
-                className="flex items-center gap-4 group cursor-pointer p-4 rounded-2xl bg-white border border-[#F0F0F0] hover:border-black hover:shadow-xl hover:shadow-black/5 hover:-translate-y-0.5 transition-all"
+                className="flex items-center gap-4 group cursor-pointer p-4 rounded-2xl bg-white border border-[#F0F0F0] hover:border-black hover:shadow-xl hover:shadow-black/5 transition-all"
               >
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold truncate group-hover:text-black transition-colors">{file.name}</p>
@@ -240,14 +279,14 @@ export function DashboardClient({
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-[#E5E5E5] group-hover:text-black transition-colors" />
-              </div>
+              </motion.div>
             )) : (
               <div className="py-20 text-center space-y-4">
                 <Clock className="w-8 h-8 text-[#E5E5E5] mx-auto" />
                 <p className="text-xs text-[#999999] font-bold">Aucun fichier récent</p>
               </div>
             )}
-          </div>
+          </motion.div>
         </aside>
       </div>
 

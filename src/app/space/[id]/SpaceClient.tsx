@@ -194,15 +194,28 @@ export function SpaceClient({
             </nav>
 
             {/* Space Explorer Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <motion.div 
+                layout
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: { transition: { staggerChildren: 0.05 } }
+                }}
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
                 {/* Folders */}
                 {folders
                   .filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
                   .map((folder) => (
-                    <div 
+                    <motion.div 
                         key={folder._id.toString()} 
+                        variants={{
+                          hidden: { y: 20, opacity: 0 },
+                          visible: { y: 0, opacity: 1 }
+                        }}
+                        whileHover={{ y: -4 }}
                         onClick={() => handleFolderClick(folder._id)}
-                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative"
+                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
                     >
                         <div className="flex-1 min-w-0">
                             <h3 className="text-base font-bold truncate group-hover:text-black transition-colors">{folder.name}</h3>
@@ -228,17 +241,22 @@ export function SpaceClient({
                                 <Trash2 className="w-3.5 h-3.5" />
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
 
                 {/* Files */}
                 {files
                   .filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
                   .map((file) => (
-                    <div 
+                    <motion.div 
                         key={file._id.toString()} 
+                        variants={{
+                          hidden: { y: 20, opacity: 0 },
+                          visible: { y: 0, opacity: 1 }
+                        }}
+                        whileHover={{ y: -4 }}
                         onClick={() => handleFileClick(file)}
-                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative"
+                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
                     >
                         <div className="min-w-0 pr-8">
                             <h3 className="text-base font-bold truncate group-hover:text-black transition-colors">{file.name}</h3>
@@ -278,9 +296,9 @@ export function SpaceClient({
                                 <Trash2 className="w-4 h-4" />
                             </button>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
 
             {/* Empty State */}
             {folders.length === 0 && files.length === 0 && (

@@ -11,6 +11,7 @@ import {
     LayoutGrid, 
     Star, 
     Clock, 
+    Users,
     Settings, 
     ChevronRight, 
     LogOut,
@@ -150,24 +151,21 @@ export function DashboardLayout({
                     </Link>
                 </div>
 
-                <nav className="flex-1 px-6 py-4 space-y-1 overflow-y-auto custom-scrollbar">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#999999] px-2 mb-6">Navigation</p>
-                    
+                <nav className="flex-1 px-6 py-8 space-y-2 overflow-y-auto custom-scrollbar">
                     {[
-                        { icon: LayoutGrid, label: 'Tableau de bord', href: '/main' },
-                        { icon: Star, label: 'Favoris', href: '/main?filter=favorites' },
-                        { icon: Clock, label: 'Récents', href: '/main?filter=recents' },
+                        { icon: LayoutGrid, label: 'Mes Espaces', href: '/main', filter: 'all' },
+                        { icon: Star, label: 'Favoris', href: '/main?filter=favorites', filter: 'favorites' },
+                        { icon: Clock, label: 'Récents', href: '/main?filter=recents', filter: 'recents' },
+                        { icon: Users, label: 'Partagés', href: '/main?filter=shared', filter: 'shared' },
                     ].map((item, i) => {
-                        const isActive = (item.label === 'Tableau de bord' && currentFilter === 'all') || 
-                                         (item.label === 'Favoris' && currentFilter === 'favorites') || 
-                                         (item.label === 'Récents' && currentFilter === 'recents');
+                        const isActive = currentFilter === item.filter;
                         return (
                             <Link 
                                 key={i} 
                                 href={item.href}
-                                className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${isActive ? 'bg-[#F5F5F5] text-black' : 'text-[#666666] hover:text-black hover:bg-[#F9F9F9]'}`}
+                                className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group ${isActive ? 'bg-black text-white' : 'text-[#666666] hover:text-black hover:bg-[#F5F5F5]'}`}
                             >
-                                <item.icon className="w-4 h-4" />
+                                <item.icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-[#CCCCCC] group-hover:text-black'}`} />
                                 <span className={`text-sm tracking-tight ${isActive ? 'font-bold' : 'font-medium'}`}>{item.label}</span>
                             </Link>
                         );
@@ -186,6 +184,27 @@ export function DashboardLayout({
                     </div>
                 </div>
             </aside>
+
+            {/* Mobile Bottom Navigation */}
+            <div className="fixed bottom-0 left-0 right-0 bg-white/80 backdrop-blur-lg border-t border-[#E5E5E5] z-[100] h-20 flex items-center justify-around lg:hidden px-6 pb-2">
+                {[
+                    { icon: LayoutGrid, href: '/main', filter: 'all' },
+                    { icon: Star, href: '/main?filter=favorites', filter: 'favorites' },
+                    { icon: Clock, href: '/main?filter=recents', filter: 'recents' },
+                    { icon: Users, href: '/main?filter=shared', filter: 'shared' },
+                ].map((item, i) => {
+                    const isActive = currentFilter === item.filter;
+                    return (
+                        <Link 
+                            key={i} 
+                            href={item.href}
+                            className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isActive ? 'bg-black text-white scale-110 shadow-lg shadow-black/20' : 'text-[#CCCCCC]'}`}
+                        >
+                            <item.icon className={`w-5 h-5`} />
+                        </Link>
+                    );
+                })}
+            </div>
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col overflow-hidden relative">

@@ -39,54 +39,53 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 premium-gradient relative overflow-hidden">
-      {/* Decorative Blur Orbs */}
-      <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-violet-600/20 blur-[100px] rounded-full animate-pulse" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/10 blur-[120px] rounded-full" />
+    <div className="min-h-screen flex items-center justify-center p-6 bg-white relative overflow-hidden">
+      {/* Subtle Background Detail */}
+      <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-[#F9F9F9] rounded-bl-full -z-10" />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md"
       >
-        <div className="text-center mb-10">
+        <div className="text-center mb-12">
           <motion.div
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/5 border border-white/10 mb-6 glass"
+            className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-black text-white mb-8 shadow-2xl shadow-black/20"
           >
-            <ArrowRight className="w-8 h-8 text-violet-400 -rotate-45" />
+            <ArrowRight className="w-10 h-10 -rotate-45" />
           </motion.div>
-          <h1 className="text-4xl font-bold tracking-tight text-white mb-2 font-outfit">SwiftDrop</h1>
-          <p className="text-slate-400">Accédez à votre espace Cloud Premium</p>
+          <h1 className="text-5xl font-serif italic tracking-tight text-black mb-4">SwiftDrop</h1>
+          <p className="text-[#999999] font-bold uppercase tracking-widest text-[10px]">Espace de stockage premium</p>
         </div>
 
-        <div className="glass rounded-[2rem] p-8 md:p-10 border border-white/10 shadow-2xl relative z-10">
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest ml-1">Email</label>
+        <div className="bg-white rounded-[2.5rem] p-10 border border-[#F0F0F0] shadow-2xl shadow-black/5 relative z-10">
+          <form onSubmit={handleSubmit} className="space-y-8">
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-[#969696] uppercase tracking-[0.2em] ml-1">Email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-violet-400 transition-colors" />
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#CCCCCC] group-focus-within:text-black transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all"
+                  className="w-full bg-[#F9F9F9] border border-[#F0F0F0] rounded-2xl py-5 pl-14 pr-6 text-black placeholder:text-[#CCCCCC] focus:outline-none focus:border-black focus:bg-white transition-all font-medium"
                   placeholder="nom@exemple.com"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-widest ml-1">Mot de passe</label>
+            <div className="space-y-3">
+              <label className="text-[10px] font-bold text-[#969696] uppercase tracking-[0.2em] ml-1">Mot de passe</label>
               <div className="relative group">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-violet-400 transition-colors" />
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#CCCCCC] group-focus-within:text-black transition-colors" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-12 pr-4 text-white placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all"
+                  className="w-full bg-[#F9F9F9] border border-[#F0F0F0] rounded-2xl py-5 pl-14 pr-6 text-black placeholder:text-[#CCCCCC] focus:outline-none focus:border-black focus:bg-white transition-all font-medium"
                   placeholder="••••••••"
                   required
                 />
@@ -96,19 +95,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-white text-black font-bold py-4 rounded-2xl hover:bg-violet-400 hover:text-white transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
+              className="w-full bg-black text-white font-bold py-5 rounded-full hover:scale-[1.02] transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 shadow-xl shadow-black/10"
             >
-              {loading ? "Chargement..." : "Se connecter"}
+              {loading ? "Connexion..." : "Se connecter"}
               {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 
-          <div className="mt-8 pt-8 border-t border-white/5 space-y-4">
-             <button className="w-full bg-white/5 border border-white/10 text-white py-3 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-3 text-sm">
-                <Github className="w-5 h-5" /> Continuer avec GitHub
-             </button>
-              <p className="text-center text-xs text-slate-500">
-                Pas encore de compte ? <Link href="/register" className="text-violet-400 font-semibold hover:underline">S'inscrire</Link>
+          <div className="mt-10 pt-8 border-t border-[#F5F5F5]">
+              <p className="text-center text-xs text-[#999999] font-medium">
+                Pas encore de compte ? <Link href="/register" className="text-black font-bold hover:underline underline-offset-4">S'inscrire gratuitement</Link>
               </p>
           </div>
         </div>

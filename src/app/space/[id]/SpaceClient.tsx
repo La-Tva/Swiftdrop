@@ -200,33 +200,30 @@ export function SpaceClient({
                     <div 
                         key={folder._id.toString()} 
                         onClick={() => handleFolderClick(folder._id)}
-                        className="p-6 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group relative"
+                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all">
-                            <Folder className={`w-4 h-4 ${folder.isFavorite ? 'fill-current' : ''}`} />
-                        </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-bold truncate group-hover:text-black transition-colors">{folder.name}</h3>
-                            <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">Dossier</p>
+                            <h3 className="text-base font-bold truncate group-hover:text-black transition-colors">{folder.name}</h3>
+                            <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest mt-1">Dossier</p>
                         </div>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-3 right-3 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleToggleFavorite(folder._id, 'folder'); }}
-                                className={`p-1.5 rounded-full hover:bg-[#F5F5F5] ${folder.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
+                                className={`p-2 rounded-full hover:bg-[#F5F5F5] ${folder.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
                             >
-                                <Star className={`w-3 h-3 ${folder.isFavorite ? 'fill-current' : ''}`} />
+                                <Star className={`w-3.5 h-3.5 ${folder.isFavorite ? 'fill-current' : ''}`} />
                             </button>
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleRename(folder._id, 'folder', folder.name); }}
-                                className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
+                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
                             >
-                                <Edit3 className="w-3 h-3" />
+                                <Edit3 className="w-3.5 h-3.5" />
                             </button>
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleDelete(folder._id, 'folder'); }}
-                                className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
+                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
                             >
-                                <Trash2 className="w-3 h-3" />
+                                <Trash2 className="w-3.5 h-3.5" />
                             </button>
                         </div>
                     </div>
@@ -239,41 +236,10 @@ export function SpaceClient({
                     <div 
                         key={file._id.toString()} 
                         onClick={() => handleFileClick(file)}
-                        className="p-6 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-6 group relative"
+                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative"
                     >
-                        <div className="flex items-start justify-between">
-                            <div className="w-12 h-12 rounded-2xl bg-[#F5F5F5] flex items-center justify-center text-[#999999] group-hover:bg-black group-hover:text-white transition-all">
-                                <File className="w-5 h-5" />
-                            </div>
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); handleToggleFavorite(file._id, 'file'); }}
-                                    className={`p-1.5 rounded-full hover:bg-[#F5F5F5] ${file.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
-                                >
-                                    <Star className={`w-3.5 h-3.5 ${file.isFavorite ? 'fill-current' : ''}`} />
-                                </button>
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); handleDownload(file._id); }}
-                                    className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
-                                >
-                                    <Download className="w-3.5 h-3.5" />
-                                </button>
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); handleRename(file._id, 'file', file.name); }}
-                                    className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
-                                >
-                                    <Edit3 className="w-3.5 h-3.5" />
-                                </button>
-                                <button 
-                                    onClick={(e) => { e.stopPropagation(); handleDelete(file._id, 'file'); }}
-                                    className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
-                                >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-                            </div>
-                        </div>
-                        <div className="min-w-0">
-                            <h3 className="text-sm font-bold truncate group-hover:text-black transition-colors">{file.name}</h3>
+                        <div className="min-w-0 pr-8">
+                            <h3 className="text-base font-bold truncate group-hover:text-black transition-colors">{file.name}</h3>
                             <div className="flex items-center gap-2 mt-1">
                                 <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">
                                     {(file.size / (1024 * 1024)).toFixed(1)} MB
@@ -283,6 +249,32 @@ export function SpaceClient({
                                     {file.type?.split('/')[1] || 'FILE'}
                                 </p>
                             </div>
+                        </div>
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); handleToggleFavorite(file._id, 'file'); }}
+                                className={`p-2 rounded-full hover:bg-[#F5F5F5] ${file.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
+                            >
+                                <Star className={`w-4 h-4 ${file.isFavorite ? 'fill-current' : ''}`} />
+                            </button>
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); handleDownload(file._id); }}
+                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
+                            >
+                                <Download className="w-4 h-4" />
+                            </button>
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); handleRename(file._id, 'file', file.name); }}
+                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
+                            >
+                                <Edit3 className="w-4 h-4" />
+                            </button>
+                            <button 
+                                onClick={(e) => { e.stopPropagation(); handleDelete(file._id, 'file'); }}
+                                className="p-2 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
+                            >
+                                <Trash2 className="w-4 h-4" />
+                            </button>
                         </div>
                     </div>
                 ))}

@@ -103,32 +103,6 @@ export function DashboardClient({
         </div>
       </header>
 
-      {/* Quick Access Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        {[
-          { id: "all", label: "Mes Espaces", count: stats.spacesTotal, icon: Folder },
-          { id: "shared", label: "Partagés", count: stats.sharedTotal, icon: Users },
-          { id: "favorites", label: "Favoris", count: stats.favoritesTotal, icon: Star },
-          { id: "recents", label: "Récents", count: recentFiles.length, icon: Clock },
-        ].map((item, i) => (
-          <div 
-            key={i} 
-            onClick={() => setFilterType(item.id as any)}
-            className={`p-6 rounded-[2rem] flex flex-col gap-6 cursor-pointer border transition-all ${filterType === item.id ? 'bg-black text-white border-black' : 'bg-white text-black border-[#E5E5E5] hover:border-black'}`}
-          >
-            <div className="flex items-center justify-between">
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${filterType === item.id ? 'bg-white/10' : 'bg-[#F5F5F5]'}`}>
-                <item.icon className="w-4 h-4" />
-              </div>
-              <ChevronRight className={`w-4 h-4 ${filterType === item.id ? 'text-white/40' : 'text-[#E5E5E5]'}`} />
-            </div>
-            <div>
-              <h3 className={`text-base font-bold ${filterType === item.id ? 'text-white' : 'text-black'}`}>{item.label}</h3>
-              <p className={`text-[10px] font-bold uppercase tracking-widest ${filterType === item.id ? 'text-white/60' : 'text-[#999999]'}`}>{item.count} éléments</p>
-            </div>
-          </div>
-        ))}
-      </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Main List */}
@@ -251,16 +225,21 @@ export function DashboardClient({
               <div 
                 key={file._id.toString()} 
                 onClick={() => router.push(`/space/${file.spaceId}`)}
-                className="flex items-center gap-4 group cursor-pointer p-2 rounded-2xl hover:bg-white hover:shadow-xl hover:shadow-black/5 hover:-translate-y-0.5 transition-all"
+                className="flex items-center gap-4 group cursor-pointer p-4 rounded-2xl bg-white border border-[#F0F0F0] hover:border-black hover:shadow-xl hover:shadow-black/5 hover:-translate-y-0.5 transition-all"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-[#999999] group-hover:bg-black group-hover:text-white transition-all">
-                  <FileText className="w-4 h-4" />
-                </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold truncate group-hover:text-black transition-colors">{file.name}</p>
-                  <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">{Math.round(file.size / 1024)} KB</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">{Math.round(file.size / 1024)} KB</p>
+                    {file.isFavorite && (
+                      <>
+                        <div className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
+                        <Star className="w-3 h-3 text-black fill-current" />
+                      </>
+                    )}
+                  </div>
                 </div>
-                {file.isFavorite && <Star className="w-3 h-3 text-black fill-current" />}
+                <ChevronRight className="w-4 h-4 text-[#E5E5E5] group-hover:text-black transition-colors" />
               </div>
             )) : (
               <div className="py-20 text-center space-y-4">

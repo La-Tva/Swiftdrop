@@ -31,12 +31,6 @@ export function SpaceClient({
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
 
-    useEffect(() => {
-        const handleClickOutside = () => setOpenDropdownId(null);
-        document.addEventListener('click', handleClickOutside);
-        return () => document.removeEventListener('click', handleClickOutside);
-    }, []);
-
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
@@ -239,13 +233,17 @@ export function SpaceClient({
                                 )}
                             </div>
                         </div>
-                        <div className="absolute top-4 right-4 z-20">
+                        <div className={`absolute top-3 right-3 ${openDropdownId === folder._id ? 'z-50' : 'z-20'}`}>
                             <button 
-                                onClick={(e) => { e.stopPropagation(); setOpenDropdownId(openDropdownId === folder._id ? null : folder._id); }}
-                                className={`p-2 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === folder._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
+                                onClick={(e) => { 
+                                    e.preventDefault();
+                                    e.stopPropagation(); 
+                                    setOpenDropdownId(openDropdownId === folder._id ? null : folder._id); 
+                                }}
+                                className={`p-2.5 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === folder._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
                             >
                                 <InteractiveIconWrapper>
-                                    <MoreHorizontal className="w-4 h-4" />
+                                    <MoreHorizontal className="w-5 h-5" />
                                 </InteractiveIconWrapper>
                             </button>
                             
@@ -309,13 +307,17 @@ export function SpaceClient({
                                 )}
                             </div>
                         </div>
-                        <div className="absolute top-4 right-4 z-20">
+                        <div className={`absolute top-3 right-3 ${openDropdownId === file._id ? 'z-50' : 'z-20'}`}>
                             <button 
-                                onClick={(e) => { e.stopPropagation(); setOpenDropdownId(openDropdownId === file._id ? null : file._id); }}
-                                className={`p-2 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === file._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
+                                onClick={(e) => { 
+                                    e.preventDefault();
+                                    e.stopPropagation(); 
+                                    setOpenDropdownId(openDropdownId === file._id ? null : file._id); 
+                                }}
+                                className={`p-2.5 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === file._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
                             >
                                 <InteractiveIconWrapper>
-                                    <MoreHorizontal className="w-4 h-4" />
+                                    <MoreHorizontal className="w-5 h-5" />
                                 </InteractiveIconWrapper>
                             </button>
                             

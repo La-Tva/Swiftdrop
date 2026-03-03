@@ -52,16 +52,23 @@ export function DashboardLayout({
 
     useEffect(() => {
         const socket = io(SOCKET_URL, { transports: ['websocket'] });
-        socket.on('file_uploaded', (data) => {
-            if (data.spaceId === spaceId) {
+        
+        const handleRefresh = (data?: any) => {
+            // If we have a spaceId in data, only refresh if we are in that space
+            // Otherwise refresh anyway (like for dashboard updates)
+            if (!data || !data.spaceId || data.spaceId === spaceId || spaceId === 'all') {
                 router.refresh();
             }
-        });
-        socket.on('folder_created', (data) => {
-            if (data.spaceId === spaceId) {
-                router.refresh();
-            }
-        });
+        };
+
+        socket.on('file_uploaded', handleRefresh);
+        socket.on('folder_created', handleRefresh);
+        socket.on('item_deleted', handleRefresh);
+        socket.on('item_renamed', handleRefresh);
+        socket.on('item_updated', handleRefresh);
+        socket.on('space_created', handleRefresh);
+        socket.on('space_deleted', handleRefresh);
+
         return () => { socket.disconnect(); };
     }, [spaceId, router]);
 

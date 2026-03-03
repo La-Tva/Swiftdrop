@@ -22,6 +22,7 @@ class CanalSocketio {
             {
                 autoConnect: true,
                 reconnection: true,
+                transports: ['websocket']
             }
         )
 

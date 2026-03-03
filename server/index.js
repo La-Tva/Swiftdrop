@@ -305,6 +305,11 @@ app.patch('/api/items/rename', async (req, res) => {
     const { id, type, newName } = req.body;
     const collection = type === 'folder' ? db.collection('folders') : db.collection('files');
     await collection.updateOne({ _id: new ObjectId(id) }, { $set: { name: newName } });
+    
+    // Get spaceId to help frontend filtering if possible, but generic emit is safer
+    const item = await collection.findOne({ _id: new ObjectId(id) });
+    io.emit('item_renamed', { id, newName, spaceId: item?.spaceId });
+    
     res.json({ success: true });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -324,13 +329,18 @@ app.delete('/api/items', async (req, res) => {
         await db.collection('spaces').deleteOne({ _id: spaceId });
         io.emit('space_deleted', { spaceId: id });
     } else if (type === 'folder') {
+        const folder = await db.collection('folders').findOne({ _id: new ObjectId(id) });
+        const spaceId = folder?.spaceId;
         await db.collection('folders').deleteOne({ _id: new ObjectId(id) });
+        io.emit('item_deleted', { id, type, spaceId });
     } else {
         const filesCollection = db.collection('files');
         const file = await filesCollection.findOne({ _id: new ObjectId(id) });
         if (file) {
+            const spaceId = file.spaceId;
             try { await bucket.delete(file.storageId); } catch (e) {}
             await filesCollection.deleteOne({ _id: new ObjectId(id) });
+            io.emit('item_deleted', { id, type, spaceId });
         }
     }
     res.json({ success: true });
@@ -347,6 +357,9 @@ app.post('/api/favorites/toggle', async (req, res) => {
         { _id: new ObjectId(id) }, 
         { $set: { isFavorite: !item.isFavorite } }
     );
+    
+    io.emit('item_updated', { id, type, spaceId: item.spaceId });
+    
     res.json({ success: true, isFavorite: !item.isFavorite });
   } catch (e) { res.status(500).json({ error: e.message }); }
 });

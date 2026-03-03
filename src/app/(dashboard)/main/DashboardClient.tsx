@@ -38,16 +38,6 @@ export function DashboardClient({
   const [filterType, setFilterType] = useState<"all" | "shared" | "favorites">("all");
   const router = useRouter();
 
-  useEffect(() => {
-      const socket = io(SOCKET_URL, { transports: ['websocket'] });
-      socket.on('space_created', (data) => {
-          if (data.ownerId === userId) router.refresh();
-      });
-      socket.on('space_deleted', () => {
-          router.refresh();
-      });
-      return () => { socket.disconnect(); };
-  }, [userId, router]);
 
   const handleDeleteSpace = async (e: React.MouseEvent, id: string) => {
       e.preventDefault();

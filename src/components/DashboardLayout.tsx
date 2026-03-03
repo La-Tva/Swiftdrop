@@ -154,8 +154,8 @@ export function DashboardLayout({
                     
                     {[
                         { icon: LayoutGrid, label: 'Dashboard', href: '/main' },
-                        { icon: Star, label: 'Favoris', href: '/main' },
-                        { icon: Clock, label: 'Récents', href: '/main' },
+                        { icon: Star, label: 'Favoris', href: '/main?filter=favorites' },
+                        { icon: Clock, label: 'Récents', href: '/main?filter=recents' },
                     ].map((item, i) => (
                         <Link 
                             key={i} 

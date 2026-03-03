@@ -15,9 +15,15 @@ import {
 import Link from "next/link";
 import { DashboardClient } from "./DashboardClient";
 
-export default async function DashboardPage() {
+export default async function DashboardPage({ 
+  searchParams 
+}: { 
+  searchParams: Promise<{ filter?: string }> 
+}) {
   const session = await auth();
   if (!session) redirect("/login");
+
+  const { filter } = await searchParams;
 
   const userId = session.user?.id as string;
   
@@ -40,6 +46,7 @@ export default async function DashboardPage() {
         recentFiles={JSON.parse(JSON.stringify(recentFiles))}
         stats={stats}
         userName={session.user?.name || ""}
+        initialFilter={(filter as any) || "all"}
       />
     </DashboardLayout>
   );

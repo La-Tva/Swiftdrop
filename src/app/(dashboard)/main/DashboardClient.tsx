@@ -31,12 +31,19 @@ export function DashboardClient({
     userSpaces: any[], 
     recentFiles: any[],
     stats: { spacesTotal: number, sharedTotal: number, favoritesTotal: number },
-    userName: string 
+    userName: string,
+    initialFilter?: "all" | "shared" | "favorites" | "recents"
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "shared" | "favorites">("all");
+  const [filterType, setFilterType] = useState<"all" | "shared" | "favorites" | "recents">(initialFilter || "all");
   const router = useRouter();
+
+  useEffect(() => {
+    if (initialFilter) {
+      setFilterType(initialFilter);
+    }
+  }, [initialFilter]);
 
 
   const handleDeleteSpace = async (e: React.MouseEvent, id: string) => {
@@ -101,6 +108,7 @@ export function DashboardClient({
           { id: "all", label: "Mes Espaces", count: stats.spacesTotal, icon: Folder, color: "text-violet-400", bg: "bg-violet-500/10" },
           { id: "shared", label: "Partagés", count: stats.sharedTotal, icon: Users, color: "text-blue-400", bg: "bg-blue-500/10" },
           { id: "favorites", label: "Favoris", count: stats.favoritesTotal, icon: Star, color: "text-amber-400", bg: "bg-amber-500/10" },
+          { id: "recents", label: "Récents", count: recentFiles.length, icon: Clock, color: "text-blue-400", bg: "bg-blue-500/10" },
         ].map((item, i) => (
           <div 
             key={i} 
@@ -126,9 +134,11 @@ export function DashboardClient({
         <section className="lg:col-span-2 space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold font-outfit flex items-center gap-2">
-              <Folder className="w-5 h-5 text-violet-400" /> {filterType === 'favorites' ? 'Fichiers Favoris' : 'Vos Espaces'}
+              <Folder className="w-5 h-5 text-violet-400" /> 
+              {filterType === 'favorites' ? 'Fichiers Favoris' : 
+               filterType === 'recents' ? 'Activité Récente' : 'Vos Espaces'}
             </h2>
-            {filterType !== 'favorites' && (
+            {filterType !== 'favorites' && filterType !== 'recents' && (
                 <button 
                     onClick={() => setIsModalOpen(true)}
                     className="text-xs font-bold text-violet-400 hover:text-violet-300 transition-colors flex items-center gap-1 uppercase tracking-widest"
@@ -140,25 +150,27 @@ export function DashboardClient({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filterType === 'favorites' ? (
-                filteredRecent.filter(f => f.isFavorite).length > 0 ? filteredRecent.filter(f => f.isFavorite).map((file) => (
+                )
+            ) : filterType === 'recents' ? (
+                filteredRecent.length > 0 ? filteredRecent.map((file) => (
                     <div 
                         key={file._id.toString()} 
                         onClick={() => router.push(`/space/${file.spaceId}`)}
                         className="glass glass-hover p-5 rounded-3xl flex items-center gap-4 group border border-white/5 cursor-pointer"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-violet-400/10 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
-                            <Star className="w-5 h-5 fill-current" />
+                        <div className="w-10 h-10 rounded-xl bg-blue-400/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+                            <Clock className="w-5 h-5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-bold truncate group-hover:text-violet-400 transition-colors">{file.name}</p>
-                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Favori</p>
+                            <p className="text-sm font-bold truncate group-hover:text-blue-400 transition-colors">{file.name}</p>
+                            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{Math.round(file.size / 1024)} KB</p>
                         </div>
                         <ChevronRight className="w-4 h-4 text-slate-700 opacity-0 group-hover:opacity-100 transition-all" />
                     </div>
                 )) : (
                     <div className="col-span-2 py-10 text-center">
-                        <Star className="w-10 h-10 text-slate-700 mx-auto mb-2" />
-                        <p className="text-slate-400 font-bold">Aucun favori</p>
+                        <Clock className="w-10 h-10 text-slate-700 mx-auto mb-2" />
+                        <p className="text-slate-400 font-bold">Aucune activité</p>
                     </div>
                 )
             ) : (

@@ -197,7 +197,7 @@ export function SpaceClient({
                             <h3 className="text-sm font-bold truncate group-hover:text-white transition-colors">{folder.name}</h3>
                             <p className="text-[10px] text-slate-500 font-bold uppercase">Dossier</p>
                         </div>
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity absolute top-2 right-2">
+                        <div className="flex items-center gap-1 opacity-60 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity absolute top-2 right-2">
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleToggleFavorite(folder._id, 'folder'); }}
                                 className={`p-1 ${folder.isFavorite ? 'text-amber-400' : 'text-slate-500'} hover:text-amber-400 transition-colors`}
@@ -235,7 +235,7 @@ export function SpaceClient({
                             <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 group-hover:text-violet-400 transition-colors">
                                 <File className="w-5 h-5" />
                             </div>
-                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-1 opacity-60 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); handleToggleFavorite(file._id, 'file'); }}
                                     className={`p-1.5 ${file.isFavorite ? 'text-amber-400' : 'text-slate-500'} hover:text-amber-400 transition-colors`}

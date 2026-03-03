@@ -180,7 +180,7 @@ export function DashboardClient({
                       {!space.isGlobal && (
                           <button 
                               onClick={(e) => handleDeleteSpace(e, space._id)}
-                              className="p-2 text-slate-600 hover:text-red-400 transition-colors"
+                              className="p-2 text-slate-500 hover:text-red-400 transition-colors"
                               title="Supprimer l'espace"
                           >
                               <Trash2 className="w-4 h-4" />

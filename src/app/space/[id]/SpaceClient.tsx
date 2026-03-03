@@ -216,10 +216,10 @@ export function SpaceClient({
                         }}
                         whileHover={{ y: -4 }}
                         onClick={() => handleFolderClick(folder._id)}
-                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
+                        className="p-8 rounded-[2rem] border border-[#EEEEEE] bg-[#FDFDFD] hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
                     >
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-base font-bold truncate group-hover:text-black transition-colors">{folder.name}</h3>
+                            <h3 className="text-base font-serif italic truncate group-hover:text-black transition-colors">{folder.name}</h3>
                             <div className="flex items-center gap-2 mt-1">
                                 <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">Dossier</p>
                                 {folder.isFavorite && (
@@ -268,7 +268,7 @@ export function SpaceClient({
                         className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
                     >
                         <div className="min-w-0 pr-8">
-                            <h3 className="text-base font-bold truncate group-hover:text-black transition-colors">{file.name}</h3>
+                            <h3 className="text-base font-sans font-bold truncate group-hover:text-black transition-colors">{file.name}</h3>
                             <div className="flex items-center gap-2 mt-1">
                                 <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">
                                     {(file.size / (1024 * 1024)).toFixed(1)} MB

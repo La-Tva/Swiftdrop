@@ -7,6 +7,8 @@ import Link from "next/link";
 import { User, Mail, Lock, ArrowRight, Github } from "lucide-react";
 import { toast } from "sonner";
 
+import { DecorativeWave } from "@/components/Animations";
+
 export default function RegisterPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -44,8 +46,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-6 bg-white overflow-hidden">
-      {/* Background Detail */}
-      <div className="absolute top-0 left-0 w-[40%] h-[40%] bg-[#F9F9F9] rounded-br-full -z-10" />
+      <DecorativeWave />
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}

@@ -8,6 +8,7 @@ import { CreateModal } from "@/components/CreateModal";
 import { RENDER_BACKEND_URL } from "@/lib/constants";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
+import { AnimatedEmptyState } from "@/components/Animations";
 
 export function SpaceClient({ 
     userId, 
@@ -317,9 +318,7 @@ export function SpaceClient({
             {/* Empty State */}
             {folders.length === 0 && files.length === 0 && (
                 <div className="py-24 flex flex-col items-center justify-center gap-8 text-center bg-[#FDFDFD] rounded-[3rem] border-2 border-dashed border-[#F0F0F0]">
-                    <div className="w-24 h-24 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#CCCCCC]">
-                        <Folder className="w-10 h-10" />
-                    </div>
+                    <AnimatedEmptyState type="folder" />
                     <div>
                         <h2 className="text-2xl font-serif italic text-black">Cet espace est vide</h2>
                         <p className="text-sm text-[#999999] max-w-xs mx-auto mt-2">

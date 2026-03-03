@@ -21,6 +21,8 @@ import { SOCKET_URL, RENDER_BACKEND_URL } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { AnimatedEmptyState } from "@/components/Animations";
+
 export function DashboardClient({ 
     userId, 
     userSpaces, 
@@ -155,9 +157,9 @@ export function DashboardClient({
                         <ChevronRight className="w-4 h-4 text-[#E5E5E5] group-hover:text-black group-hover:translate-x-1 transition-all" />
                     </motion.div>
                 )) : (
-                    <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem]">
-                        <Star className="w-10 h-10 text-[#E5E5E5] mx-auto mb-4" />
-                        <h3 className="text-xl font-serif italic text-black">Aucun favori</h3>
+                    <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem] flex flex-col items-center justify-center">
+                        <AnimatedEmptyState type="file" />
+                        <h3 className="text-xl font-serif italic text-black mt-4">Aucun favori</h3>
                         <p className="text-[#999999] text-xs">Marquez des fichiers pour les retrouver ici.</p>
                     </div>
                 )
@@ -191,9 +193,9 @@ export function DashboardClient({
                         <ChevronRight className="w-4 h-4 text-[#E5E5E5] group-hover:text-black group-hover:translate-x-1 transition-all" />
                     </motion.div>
                 )) : (
-                    <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem]">
-                        <Clock className="w-10 h-10 text-[#E5E5E5] mx-auto mb-4" />
-                        <h3 className="text-xl font-serif italic text-black">Aucune activité</h3>
+                    <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem] flex flex-col items-center justify-center">
+                        <AnimatedEmptyState type="activity" />
+                        <h3 className="text-xl font-serif italic text-black mt-4">Aucune activité</h3>
                         <p className="text-[#999999] text-xs">Vos modifications récentes apparaîtront ici.</p>
                     </div>
                 )
@@ -239,9 +241,9 @@ export function DashboardClient({
                     </Link>
                   </motion.div>
                 )) : (
-                  <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem] flex flex-col items-center justify-center gap-4">
-                    <Folder className="w-10 h-10 text-[#E5E5E5]" />
-                    <div>
+                  <div className="col-span-2 py-20 text-center border-2 border-dashed border-[#E5E5E5] rounded-[2.5rem] flex flex-col items-center justify-center">
+                    <AnimatedEmptyState type="folder" />
+                    <div className="mt-4">
                       <h3 className="text-xl font-serif italic text-black">Aucun espace</h3>
                       <p className="text-[#999999] text-xs">Créez votre premier espace pour commencer.</p>
                     </div>

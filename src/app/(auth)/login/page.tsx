@@ -8,6 +8,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 
+import { DecorativeWave } from "@/components/Animations";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -41,7 +43,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-white relative overflow-hidden">
       {/* Subtle Background Detail */}
-      <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-[#F9F9F9] rounded-bl-full -z-10" />
+      <DecorativeWave />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}

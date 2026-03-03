@@ -176,7 +176,7 @@ export function DashboardLayout({
                 </nav>
 
                 <div className="p-4 border-t border-white/5">
-                    <Link href="/profile" className="flex items-center gap-3 p-3 rounded-2xl hover:bg-white/5 transition-all group border border-transparent hover:border-white/5">
+                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 group">
                         <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400 font-black text-xs uppercase border border-violet-500/20 group-hover:scale-110 transition-transform">
                             {initials}
                         </div>
@@ -184,8 +184,7 @@ export function DashboardLayout({
                             <p className="text-xs font-bold text-white truncate uppercase tracking-tighter">{userName}</p>
                             <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest truncate">{userEmail || 'Premium User'}</p>
                         </div>
-                        <Settings className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors" />
-                    </Link>
+                    </div>
                 </div>
             </aside>
 
@@ -232,13 +231,6 @@ export function DashboardLayout({
                                             <p className="text-[10px] text-slate-500 truncate">{userEmail}</p>
                                         </div>
                                         <div className="p-2">
-                                            <Link 
-                                                href="/profile"
-                                                onClick={() => setShowUserMenu(false)}
-                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-400 hover:text-white transition-all text-xs font-bold"
-                                            >
-                                                <Settings className="w-4 h-4" /> Paramètres
-                                            </Link>
                                             <button 
                                                 onClick={handleLogout}
                                                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-all text-xs font-bold w-full"

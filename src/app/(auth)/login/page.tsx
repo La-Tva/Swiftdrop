@@ -54,25 +54,25 @@ export default function LoginPage() {
           <motion.div
             initial={{ scale: 0.8 }}
             animate={{ scale: 1 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-black text-white mb-8 shadow-2xl shadow-black/20"
+            className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-tr from-orange-400 to-orange-600 text-white mb-8 shadow-[0_0_30px_rgba(249,115,22,0.4)]"
           >
             <ArrowRight className="w-10 h-10 -rotate-45" />
           </motion.div>
-          <h1 className="text-5xl font-serif italic tracking-tight text-black mb-4">SwiftDrop</h1>
-          <p className="text-[#999999] font-bold uppercase tracking-widest text-[10px]">Espace de stockage premium</p>
+          <h1 className="text-5xl font-serif italic tracking-tight text-white mb-4">SwiftDrop</h1>
+          <p className="text-[#A0A0A0] font-bold uppercase tracking-widest text-[10px]">Espace de stockage premium</p>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] p-10 border border-[#F0F0F0] shadow-2xl shadow-black/5 relative z-10">
+        <div className="bg-[#0A0503]/50 backdrop-blur-3xl rounded-[2.5rem] p-10 border border-white/5 shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)] relative z-10">
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-3">
-              <label className="text-[10px] font-bold text-[#969696] uppercase tracking-[0.2em] ml-1">Email</label>
+              <label className="text-[10px] font-bold text-[#A0A0A0] uppercase tracking-[0.2em] ml-1 group-focus-within:text-orange-500 transition-colors">Email</label>
               <div className="relative group">
-                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#CCCCCC] group-focus-within:text-black transition-colors" />
+                <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] group-focus-within:text-orange-500 transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#F9F9F9] border border-[#F0F0F0] rounded-2xl py-5 pl-14 pr-6 text-black placeholder:text-[#CCCCCC] focus:outline-none focus:border-black focus:bg-white transition-all font-medium"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 pl-14 pr-6 text-white placeholder:text-[#666666] focus:outline-none focus:border-orange-500 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(249,115,22,0.2)] transition-all font-medium"
                   placeholder="nom@exemple.com"
                   required
                 />
@@ -80,14 +80,14 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-3">
-              <label className="text-[10px] font-bold text-[#969696] uppercase tracking-[0.2em] ml-1">Mot de passe</label>
+              <label className="text-[10px] font-bold text-[#A0A0A0] uppercase tracking-[0.2em] ml-1 group-focus-within:text-orange-500 transition-colors">Mot de passe</label>
               <div className="relative group">
-                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#CCCCCC] group-focus-within:text-black transition-colors" />
+                <Lock className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666] group-focus-within:text-orange-500 transition-colors" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#F9F9F9] border border-[#F0F0F0] rounded-2xl py-5 pl-14 pr-6 text-black placeholder:text-[#CCCCCC] focus:outline-none focus:border-black focus:bg-white transition-all font-medium"
+                  className="w-full bg-white/5 border border-white/10 rounded-2xl py-5 pl-14 pr-6 text-white placeholder:text-[#666666] focus:outline-none focus:border-orange-500 focus:bg-white/10 focus:shadow-[0_0_15px_rgba(249,115,22,0.2)] transition-all font-medium"
                   placeholder="••••••••"
                   required
                 />
@@ -97,16 +97,16 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black text-white font-bold py-5 rounded-full hover:scale-[1.02] transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 shadow-xl shadow-black/10"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold py-5 rounded-full hover:scale-[1.02] transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 shadow-[0_4px_20px_rgba(249,115,22,0.3)] hover:shadow-[0_4px_25px_rgba(249,115,22,0.4)]"
             >
               {loading ? "Connexion..." : "Se connecter"}
               {!loading && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
 
-          <div className="mt-10 pt-8 border-t border-[#F5F5F5]">
-              <p className="text-center text-xs text-[#999999] font-medium">
-                Pas encore de compte ? <Link href="/register" className="text-black font-bold hover:underline underline-offset-4">S'inscrire gratuitement</Link>
+          <div className="mt-10 pt-8 border-t border-white/5">
+              <p className="text-center text-xs text-[#A0A0A0] font-medium">
+                Pas encore de compte ? <Link href="/register" className="text-orange-500 font-bold hover:text-orange-400 hover:drop-shadow-[0_0_10px_rgba(249,115,22,0.5)] transition-all">S'inscrire gratuitement</Link>
               </p>
           </div>
         </div>

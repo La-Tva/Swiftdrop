@@ -67,43 +67,43 @@ export function CreateModal({
                     animate={{ opacity: 1 }} 
                     exit={{ opacity: 0 }}
                     onClick={onClose}
-                    className="absolute inset-0 bg-white/60 backdrop-blur-xl"
+                    className="absolute inset-0 bg-[#0A0503]/80 backdrop-blur-xl"
                 />
                 
                 <motion.div 
                     initial={{ scale: 0.9, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                    className="w-full max-w-md bg-white border border-[#E5E5E5] rounded-[2.5rem] p-10 relative z-10 shadow-2xl shadow-black/5"
+                    className="w-full max-w-md bg-[#0A0503]/90 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-10 relative z-10 shadow-[0_20px_60px_-15px_rgba(249,115,22,0.2)]"
                 >
                     <div className="flex items-center justify-between mb-10">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-2xl bg-[#F5F5F5] flex items-center justify-center text-black">
+                            <div className="w-12 h-12 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.2)]">
                                 {type === "space" ? <LayoutGrid className="w-6 h-6" /> : <Folder className="w-6 h-6" />}
                             </div>
-                            <h2 className="text-2xl font-serif italic tracking-tight">Nouveau {type === "space" ? "Espace" : "Dossier"}</h2>
+                            <h2 className="text-2xl font-serif italic tracking-tight text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">Nouveau {type === "space" ? "Espace" : "Dossier"}</h2>
                         </div>
-                        <button onClick={onClose} className="p-2 hover:bg-[#F5F5F5] rounded-full transition-colors">
-                            <X className="w-5 h-5 text-[#999999]" />
+                        <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full transition-colors group">
+                            <X className="w-5 h-5 text-[#A0A0A0] group-hover:text-white" />
                         </button>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-8">
                         <div className="space-y-3">
-                            <label className="text-xs font-bold text-[#999999] uppercase tracking-widest ml-1">Nom du {type === "space" ? "Projet" : "Dossier"}</label>
+                            <label className="text-xs font-bold text-[#A0A0A0] uppercase tracking-widest ml-1">Nom du {type === "space" ? "Projet" : "Dossier"}</label>
                             <input 
                                 autoFocus
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 placeholder={type === "space" ? "Mon Espace Perso" : "Mes Documents"}
-                                className="w-full bg-[#F9F9F9] border border-[#F0F0F0] rounded-2xl py-5 px-6 text-black placeholder:text-[#CCCCCC] focus:outline-none focus:border-black focus:bg-white transition-all font-medium"
+                                className="w-full bg-[#0A0503]/50 backdrop-blur-xl border border-white/10 rounded-2xl py-5 px-6 text-white placeholder:text-[#666666] focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500/20 transition-all font-medium focus:shadow-[0_0_20px_rgba(249,115,22,0.1)]"
                                 required
                             />
                         </div>
 
                         <button 
                             disabled={loading}
-                            className="w-full bg-black text-white font-bold py-5 rounded-full hover:scale-[1.02] transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 shadow-lg shadow-black/10"
+                            className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold py-5 rounded-full hover:scale-[1.02] transition-all transform active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
                         >
                             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Créer l'élément"}
                             {!loading && <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />}

@@ -85,12 +85,12 @@ export function DashboardClient({
   return (
     <div className="flex flex-col gap-10">
       {/* Header Section */}
-      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-6">
         <div>
-          <h1 className="text-3xl font-black font-outfit tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-black font-outfit tracking-tight">
             Bonjour, <span className="text-violet-400">{userName.split(' ')[0]}</span>
           </h1>
-          <p className="text-slate-500 font-medium mt-1">Gérez vos fichiers avec élégance.</p>
+          <p className="text-slate-500 text-sm font-medium mt-1">Gérez vos fichiers avec élégance.</p>
         </div>
         
         <div className="relative group max-w-md w-full md:w-80">
@@ -115,7 +115,7 @@ export function DashboardClient({
           <div 
             key={i} 
             onClick={() => setFilterType(item.id as any)}
-            className={`glass glass-hover p-6 rounded-3xl flex items-center justify-between group cursor-pointer border ${filterType === item.id ? 'border-violet-500/50' : 'border-white/5'} hover:border-white/10 transition-all`}
+            className={`glass glass-hover p-4 sm:p-6 rounded-3xl flex items-center justify-between group cursor-pointer border ${filterType === item.id ? 'border-violet-500/50' : 'border-white/5'} hover:border-white/10 transition-all`}
           >
             <div className="flex items-center gap-4">
               <div className={`w-12 h-12 rounded-2xl ${item.bg} flex items-center justify-center ${item.color} group-hover:scale-110 transition-transform`}>

@@ -136,13 +136,13 @@ export function SpaceClient({
             />
 
             {/* Header Navigation */}
-            <nav className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    <Link href="/main" className="p-2 glass rounded-xl text-slate-400 hover:text-white transition-all">
+            <nav className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                    <Link href="/main" className="p-2 shrink-0 glass rounded-xl text-slate-400 hover:text-white transition-all">
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
-                    <div>
-                        <h1 className="text-2xl font-bold font-outfit uppercase tracking-tight">{name}</h1>
+                    <div className="min-w-0">
+                        <h1 className="text-lg sm:text-2xl font-bold font-outfit uppercase tracking-tight truncate">{name}</h1>
                         <p className="text-[10px] text-violet-400 font-black uppercase tracking-widest mt-0.5">
                             {folders.length + files.length} éléments
                         </p>
@@ -161,18 +161,18 @@ export function SpaceClient({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:justify-start">
                     <button 
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="flex items-center gap-2 px-4 py-2 bg-violet-500 hover:bg-violet-400 rounded-xl text-[10px] font-black uppercase tracking-widest text-white transition-all disabled:opacity-50"
+                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-violet-500 hover:bg-violet-400 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white transition-all disabled:opacity-50"
                     >
                         {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                        {uploading ? "Upload..." : "Uploader"}
+                        {uploading ? "..." : "Uploader"}
                     </button>
                     <button 
                         onClick={() => setIsModalOpen(true)}
-                        className="flex items-center gap-2 px-4 py-2 glass glass-hover rounded-xl text-[10px] font-black uppercase tracking-widest text-violet-400 border border-white/5"
+                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 glass glass-hover rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-violet-400 border border-white/5"
                     >
                         <Plus className="w-4 h-4" /> Dossier
                     </button>

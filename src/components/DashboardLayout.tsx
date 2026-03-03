@@ -178,7 +178,7 @@ export function DashboardLayout({
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col overflow-hidden relative">
                 {/* Global Header */}
-                <header className="h-24 px-8 border-b border-white/5 flex items-center justify-between relative z-10 bg-[#0A0A0B]/50 backdrop-blur-md">
+                <header className="h-20 lg:h-24 px-4 lg:px-8 border-b border-white/5 flex items-center justify-between relative z-10 bg-[#0A0A0B]/50 backdrop-blur-md">
                     <div className="flex items-center gap-4 lg:hidden">
                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center">
                             <Upload className="w-4 h-4 text-white" />
@@ -239,7 +239,7 @@ export function DashboardLayout({
                     </div>
                 </header>
 
-                <main className="flex-1 overflow-y-auto custom-scrollbar p-8">
+                <main className="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-8">
                     <div className="max-w-7xl mx-auto space-y-12 pb-20">
                         {children}
                     </div>

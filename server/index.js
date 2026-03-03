@@ -22,45 +22,61 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
       return callback(null, true);
-    } else {
-      console.log("Blocked by CORS:", origin);
-      return callback(null, true); // Still allow for now to unblock
     }
+    return callback(null, true); // Still allow to unblock
   },
-  credentials: true
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
 }));
 
-// Request Logger for debugging
+// Explicitly handle all preflight and socket.io requests
 app.use((req, res, next) => {
-  // Silence the browsing-topics policy warning
+  const origin = req.headers.origin;
+  if (origin && (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app'))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Permissions-Policy', 'browsing-topics=()');
+
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
   
   if (req.url !== '/health') {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
   }
   next();
 });
+
 app.use(express.json());
 
-// Health check for Render
+// Health check and root
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
+app.get('/', (req, res) => res.send('SwiftDrop Backend Engine Running'));
 
-const PORT = process.env.PORT || 10000; // Render uses 10000 often
+const PORT = process.env.PORT || 10000;
 const MONGODB_URI = process.env.DATABASE_URL || process.env.MONGODB_URI;
 
 const server = http.createServer(app);
 const io = new Server(server, {
+  path: '/socket.io/',
   cors: {
     origin: (origin, callback) => callback(null, true),
     methods: ["GET", "POST"],
-    credentials: true,
-    allowedHeaders: ["*"]
+    credentials: true
   },
-  allowEIO3: true // Support older clients if any
+  allowEIO3: true,
+  transports: ['websocket', 'polling'],
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 // Global process error handlers to prevent crash
@@ -349,6 +365,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => console.log('Client disconnected'));
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`Backend engine running on port ${PORT}`);
 });

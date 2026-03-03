@@ -131,58 +131,57 @@ export function DashboardLayout({
     const initials = userName.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
     return (
-        <div {...getRootProps()} className="min-h-screen bg-[#0A0A0B] text-white selection:bg-violet-500/30 selection:text-white font-sans relative flex overflow-hidden">
+        <div {...getRootProps()} className="min-h-screen bg-[#FFFFFF] text-[#000000] selection:bg-black/10 selection:text-black font-sans relative flex overflow-hidden">
             <input {...getInputProps()} />
             
-            {/* Background Animations */}
+            {/* Minimalist Background Layout */}
             <div className="fixed inset-0 pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-violet-600/10 blur-[120px] rounded-full animate-pulse" />
-                <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-600/10 blur-[120px] rounded-full animate-pulse delay-1000" />
+                <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-[#F9F9F9] rounded-bl-full opacity-50" />
             </div>
 
             {/* Sidebar */}
-            <aside className="w-72 bg-[#0D0D0F]/80 backdrop-blur-xl border-r border-white/5 flex flex-col relative z-20 hidden lg:flex">
+            <aside className="w-72 bg-white border-r border-[#E5E5E5] flex flex-col relative z-20 hidden lg:flex">
                 <div className="p-8">
                     <Link href="/main" className="flex items-center gap-3 group">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center shadow-lg shadow-violet-500/20 group-hover:scale-110 transition-transform">
+                        <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center transition-transform group-hover:scale-105">
                             <Upload className="w-5 h-5 text-white" />
                         </div>
-                        <span className="text-xl font-black font-outfit tracking-tighter uppercase whitespace-nowrap">SwiftDrop <span className="text-violet-400">v2</span></span>
+                        <span className="text-xl font-serif italic tracking-tight lowercase">swiftdrop <span className="text-slate-400 font-sans not-italic text-xs ml-1">v2</span></span>
                     </Link>
                 </div>
 
-                <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto custom-scrollbar">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 px-4 mb-4">Menu Principal</p>
+                <nav className="flex-1 px-6 py-4 space-y-1 overflow-y-auto custom-scrollbar">
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-[#999999] px-2 mb-6">Navigation</p>
                     
                     {[
-                        { icon: LayoutGrid, label: 'Dashboard', href: '/main' },
+                        { icon: LayoutGrid, label: 'Tableau de bord', href: '/main' },
                         { icon: Star, label: 'Favoris', href: '/main?filter=favorites' },
                         { icon: Clock, label: 'Récents', href: '/main?filter=recents' },
                     ].map((item, i) => {
-                        const isActive = (item.label === 'Dashboard' && currentFilter === 'all') || 
+                        const isActive = (item.label === 'Tableau de bord' && currentFilter === 'all') || 
                                          (item.label === 'Favoris' && currentFilter === 'favorites') || 
                                          (item.label === 'Récents' && currentFilter === 'recents');
                         return (
                             <Link 
                                 key={i} 
                                 href={item.href}
-                                className={`flex items-center gap-3 px-4 py-3 rounded-2xl transition-all group ${isActive ? 'bg-white/5 text-violet-400 border border-white/5' : 'text-slate-500 hover:text-white hover:bg-white/5'}`}
+                                className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${isActive ? 'bg-[#F5F5F5] text-black' : 'text-[#666666] hover:text-black hover:bg-[#F9F9F9]'}`}
                             >
-                                <item.icon className={`w-5 h-5 ${isActive ? '' : 'group-hover:text-violet-400 transition-colors'}`} />
-                                <span className="font-bold text-sm tracking-tight">{item.label}</span>
+                                <item.icon className="w-4 h-4" />
+                                <span className={`text-sm tracking-tight ${isActive ? 'font-bold' : 'font-medium'}`}>{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-white/5">
-                    <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 group">
-                        <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400 font-black text-xs uppercase border border-violet-500/20 group-hover:scale-110 transition-transform">
+                <div className="p-6 border-t border-[#E5E5E5]">
+                    <div className="flex items-center gap-3 p-2 rounded-2xl group transition-all">
+                        <div className="w-10 h-10 rounded-full bg-[#F5F5F5] flex items-center justify-center text-black font-serif italic text-sm border border-[#E5E5E5]">
                             {initials}
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-xs font-bold text-white truncate uppercase tracking-tighter">{userName}</p>
-                            <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest truncate">{userEmail || 'Premium User'}</p>
+                            <p className="text-xs font-bold text-black truncate">{userName}</p>
+                            <p className="text-[10px] text-[#999999] font-medium truncate">{userEmail || 'Membre Premium'}</p>
                         </div>
                     </div>
                 </div>
@@ -191,30 +190,30 @@ export function DashboardLayout({
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col overflow-hidden relative">
                 {/* Global Header */}
-                <header className="h-20 lg:h-24 px-4 lg:px-8 border-b border-white/5 flex items-center justify-between relative z-10 bg-[#0A0A0B]/50 backdrop-blur-md">
+                <header className="h-20 lg:h-24 px-8 border-b border-[#E5E5E5] flex items-center justify-between relative z-10 bg-white/80 backdrop-blur-md">
                     <div className="flex items-center gap-4 lg:hidden">
-                         <Link href="/main" className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-blue-500 flex items-center justify-center">
+                         <Link href="/main" className="w-8 h-8 rounded-lg bg-black flex items-center justify-center">
                             <Upload className="w-4 h-4 text-white" />
                          </Link>
                     </div>
 
-                    <div className="hidden md:flex items-center gap-1 overflow-hidden ml-4 lg:ml-0">
-                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 opacity-50">SwiftDrop</p>
-                         <ChevronRight className="w-3 h-3 text-slate-800" />
-                         <p className="text-[10px] font-black uppercase tracking-widest text-violet-400">Dashboard</p>
+                    <div className="hidden md:flex items-center gap-2 ml-4 lg:ml-0">
+                         <p className="text-[10px] font-bold uppercase tracking-widest text-[#999999]">Applications</p>
+                         <ChevronRight className="w-3 h-3 text-[#E5E5E5]" />
+                         <p className="text-[10px] font-bold uppercase tracking-widest text-black">Explorateur</p>
                     </div>
 
                     <div className="flex items-center gap-4 relative">
                         <div className="relative">
                             <button 
                                 onClick={() => setShowUserMenu(!showUserMenu)}
-                                className="flex items-center gap-3 pl-1 pr-4 py-1.5 rounded-2xl bg-white/5 border border-white/10 hover:border-violet-500/30 transition-all group"
+                                className="flex items-center gap-3 px-3 py-1.5 rounded-full border border-[#E5E5E5] hover:border-black transition-all group bg-white"
                             >
-                                 <div className="w-8 h-8 rounded-xl bg-violet-400 flex items-center justify-center font-black text-[10px] text-black">
+                                 <div className="w-7 h-7 rounded-full bg-black flex items-center justify-center font-serif italic text-[10px] text-white">
                                     {initials.substring(0, 1)}
                                  </div>
-                                 <span className="text-xs font-bold text-slate-400 group-hover:text-white transition-colors">{userName}</span>
-                                 <ChevronDown className={`w-4 h-4 text-slate-600 group-hover:text-white transition-all ${showUserMenu ? 'rotate-180' : ''}`} />
+                                 <span className="text-xs font-bold text-[#666666] group-hover:text-black transition-colors">{userName}</span>
+                                 <ChevronDown className={`w-3 h-3 text-[#999999] group-hover:text-black transition-all ${showUserMenu ? 'rotate-180' : ''}`} />
                             </button>
 
                             {/* User Dropdown */}
@@ -224,20 +223,18 @@ export function DashboardLayout({
                                         initial={{ opacity: 0, y: -5 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -5 }}
-                                        className="absolute right-0 top-14 w-56 bg-[#111113] border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50"
+                                        className="absolute right-0 top-12 w-56 bg-white border border-[#E5E5E5] rounded-2xl shadow-xl overflow-hidden z-50 p-2"
                                     >
-                                        <div className="p-4 border-b border-white/5">
-                                            <p className="text-xs font-bold text-white">{userName}</p>
-                                            <p className="text-[10px] text-slate-500 truncate">{userEmail}</p>
+                                        <div className="px-4 py-3 border-b border-[#F5F5F5] mb-2">
+                                            <p className="text-xs font-bold text-black">{userName}</p>
+                                            <p className="text-[10px] text-[#999999] truncate">{userEmail}</p>
                                         </div>
-                                        <div className="p-2">
-                                            <button 
-                                                onClick={handleLogout}
-                                                className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-all text-xs font-bold w-full"
-                                            >
-                                                <LogOut className="w-4 h-4" /> Se déconnecter
-                                            </button>
-                                        </div>
+                                        <button 
+                                            onClick={handleLogout}
+                                            className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-[#FFF1F1] text-[#666666] hover:text-[#FF4444] transition-all text-xs font-bold w-full"
+                                        >
+                                            <LogOut className="w-4 h-4" /> Se déconnecter
+                                        </button>
                                     </motion.div>
                                 )}
                             </AnimatePresence>

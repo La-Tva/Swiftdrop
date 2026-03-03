@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className="dark">
-      <body className="antialiased overflow-x-hidden bg-[#0A0A0B]">
+    <html lang="fr">
+      <body className="antialiased overflow-x-hidden bg-[#FFFFFF] text-[#000000]">
         <Providers>
           {children}
           <Toaster position="top-center" richColors />

@@ -147,43 +147,44 @@ export function SpaceClient({
             />
 
             {/* Header Navigation */}
-            <nav className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <Link href="/main" className="p-2 shrink-0 glass rounded-xl text-slate-400 hover:text-white transition-all">
+            <nav className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-4 border-b border-[#F5F5F5]">
+                <div className="flex items-center gap-4 w-full sm:w-auto">
+                    <Link href="/main" className="p-3 shrink-0 rounded-2xl bg-[#F5F5F5] text-black hover:bg-black hover:text-white transition-all">
                         <ArrowLeft className="w-5 h-5" />
                     </Link>
                     <div className="min-w-0">
-                        <h1 className="text-lg sm:text-2xl font-bold font-outfit uppercase tracking-tight truncate">{name}</h1>
-                        <p className="text-[10px] text-violet-400 font-black uppercase tracking-widest mt-0.5">
-                            {folders.length + files.length} éléments
+                        <h1 className="text-3xl font-serif italic tracking-tight truncate">{name}</h1>
+                        <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest mt-1">
+                            {folders.length + files.length} éléments dans cet espace
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-4 flex-1 max-w-md mx-8 hidden md:flex">
-                    <div className="relative w-full group">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-violet-400 transition-colors" />
+                
+                <div className="flex-1 max-w-md hidden md:block">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#CCCCCC] group-focus-within:text-black transition-colors" />
                         <input 
                             type="text" 
-                            placeholder="Rechercher dans cet espace..." 
+                            placeholder="Rechercher..." 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-xs focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-all"
+                            className="w-full bg-[#F9F9F9] border border-[#F0F0F0] rounded-2xl py-3 pl-12 pr-4 text-xs focus:outline-none focus:border-black focus:bg-white transition-all"
                         />
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end sm:justify-start">
+                <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
                     <button 
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
-                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-violet-500 hover:bg-violet-400 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white transition-all disabled:opacity-50"
+                        className="group flex items-center justify-center gap-2 px-6 py-3 bg-black text-white rounded-full text-xs font-bold hover:scale-105 transition-all shadow-lg shadow-black/10 disabled:opacity-50"
                     >
-                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                        {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4 transition-transform group-hover:-translate-y-1" />}
                         {uploading ? "..." : "Uploader"}
                     </button>
                     <button 
                         onClick={() => setIsModalOpen(true)}
-                        className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 sm:px-4 py-2 glass glass-hover rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-violet-400 border border-white/5"
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-[#E5E5E5] text-black rounded-full text-xs font-bold hover:border-black transition-all"
                     >
                         <Plus className="w-4 h-4" /> Dossier
                     </button>
@@ -191,7 +192,7 @@ export function SpaceClient({
             </nav>
 
             {/* Space Explorer Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Folders */}
                 {folders
                   .filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -199,35 +200,33 @@ export function SpaceClient({
                     <div 
                         key={folder._id.toString()} 
                         onClick={() => handleFolderClick(folder._id)}
-                        className="glass glass-hover p-4 rounded-2xl flex items-center gap-4 group cursor-pointer border border-white/5 relative"
+                        className="p-6 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex items-center gap-4 group relative"
                     >
-                        <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400 group-hover:scale-110 transition-transform">
-                            <Folder className={`w-5 h-5 ${folder.isFavorite ? 'fill-violet-400' : 'fill-violet-400/20'}`} />
+                        <div className="w-10 h-10 rounded-xl bg-[#F5F5F5] flex items-center justify-center text-black group-hover:bg-black group-hover:text-white transition-all">
+                            <Folder className={`w-4 h-4 ${folder.isFavorite ? 'fill-current' : ''}`} />
                         </div>
                         <div className="flex-1 min-w-0">
-                            <h3 className="text-sm font-bold truncate group-hover:text-white transition-colors">{folder.name}</h3>
-                            <p className="text-[10px] text-slate-500 font-bold uppercase">Dossier</p>
+                            <h3 className="text-sm font-bold truncate group-hover:text-black transition-colors">{folder.name}</h3>
+                            <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">Dossier</p>
                         </div>
-                        <div className="flex items-center gap-1 opacity-60 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity absolute top-2 right-2">
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-3 right-3 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleToggleFavorite(folder._id, 'folder'); }}
-                                className={`p-1 ${folder.isFavorite ? 'text-amber-400' : 'text-slate-500'} hover:text-amber-400 transition-colors`}
+                                className={`p-1.5 rounded-full hover:bg-[#F5F5F5] ${folder.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
                             >
-                                <Star className={`w-3.5 h-3.5 ${folder.isFavorite ? 'fill-current' : ''}`} />
+                                <Star className={`w-3 h-3 ${folder.isFavorite ? 'fill-current' : ''}`} />
                             </button>
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleRename(folder._id, 'folder', folder.name); }}
-                                className="p-1 text-slate-500 hover:text-white transition-colors"
-                                title="Renommer"
+                                className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
                             >
-                                <Edit3 className="w-3.5 h-3.5" />
+                                <Edit3 className="w-3 h-3" />
                             </button>
                             <button 
                                 onClick={(e) => { e.stopPropagation(); handleDelete(folder._id, 'folder'); }}
-                                className="p-1 text-slate-500 hover:text-red-400 transition-colors"
-                                title="Supprimer"
+                                className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
                             >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <Trash2 className="w-3 h-3" />
                             </button>
                         </div>
                     </div>
@@ -240,48 +239,50 @@ export function SpaceClient({
                     <div 
                         key={file._id.toString()} 
                         onClick={() => handleFileClick(file)}
-                        className="glass glass-hover p-4 rounded-2xl flex flex-col gap-4 group relative border border-white/5 cursor-pointer"
+                        className="p-6 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-6 group relative"
                     >
                         <div className="flex items-start justify-between">
-                            <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 group-hover:text-violet-400 transition-colors">
+                            <div className="w-12 h-12 rounded-2xl bg-[#F5F5F5] flex items-center justify-center text-[#999999] group-hover:bg-black group-hover:text-white transition-all">
                                 <File className="w-5 h-5" />
                             </div>
-                            <div className="flex items-center gap-1 opacity-60 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
+                            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-all absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-1 rounded-full border border-[#F0F0F0]">
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); handleToggleFavorite(file._id, 'file'); }}
-                                    className={`p-1.5 ${file.isFavorite ? 'text-amber-400' : 'text-slate-500'} hover:text-amber-400 transition-colors`}
-                                    title="Favori"
+                                    className={`p-1.5 rounded-full hover:bg-[#F5F5F5] ${file.isFavorite ? 'text-black' : 'text-[#CCCCCC]'} transition-colors`}
                                 >
-                                    <Star className={`w-4 h-4 ${file.isFavorite ? 'fill-current' : ''}`} />
+                                    <Star className={`w-3.5 h-3.5 ${file.isFavorite ? 'fill-current' : ''}`} />
                                 </button>
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); handleDownload(file._id); }}
-                                    className="p-1.5 text-slate-500 hover:text-violet-400 transition-colors"
-                                    title="Télécharger"
+                                    className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
                                 >
-                                    <Download className="w-4 h-4" />
+                                    <Download className="w-3.5 h-3.5" />
                                 </button>
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); handleRename(file._id, 'file', file.name); }}
-                                    className="p-1.5 text-slate-500 hover:text-white transition-colors"
-                                    title="Renommer"
+                                    className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-black transition-colors"
                                 >
-                                    <Edit3 className="w-4 h-4" />
+                                    <Edit3 className="w-3.5 h-3.5" />
                                 </button>
                                 <button 
                                     onClick={(e) => { e.stopPropagation(); handleDelete(file._id, 'file'); }}
-                                    className="p-1.5 text-slate-500 hover:text-red-400 transition-colors"
-                                    title="Supprimer"
+                                    className="p-1.5 rounded-full hover:bg-[#F5F5F5] text-[#CCCCCC] hover:text-red-500 transition-colors"
                                 >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                             </div>
                         </div>
-                        <div>
-                            <h3 className="text-sm font-bold truncate group-hover:text-white transition-colors">{file.name}</h3>
-                            <p className="text-[10px] text-slate-500 mt-1 uppercase tracking-widest font-black opacity-60">
-                                {(file.size / (1024 * 1024)).toFixed(1)} MB • {file.type?.split('/')[1] || 'FILE'}
-                            </p>
+                        <div className="min-w-0">
+                            <h3 className="text-sm font-bold truncate group-hover:text-black transition-colors">{file.name}</h3>
+                            <div className="flex items-center gap-2 mt-1">
+                                <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">
+                                    {(file.size / (1024 * 1024)).toFixed(1)} MB
+                                </p>
+                                <div className="w-1 h-1 rounded-full bg-[#E5E5E5]" />
+                                <p className="text-[10px] text-[#999999] font-bold uppercase tracking-widest">
+                                    {file.type?.split('/')[1] || 'FILE'}
+                                </p>
+                            </div>
                         </div>
                     </div>
                 ))}
@@ -289,26 +290,26 @@ export function SpaceClient({
 
             {/* Empty State */}
             {folders.length === 0 && files.length === 0 && (
-                <div className="glass rounded-[2.5rem] p-20 flex flex-col items-center justify-center gap-4 text-center border border-white/5">
-                    <div className="w-20 h-20 rounded-full bg-white/5 flex items-center justify-center text-slate-800">
+                <div className="py-24 flex flex-col items-center justify-center gap-8 text-center bg-[#FDFDFD] rounded-[3rem] border-2 border-dashed border-[#F0F0F0]">
+                    <div className="w-24 h-24 rounded-full bg-[#F5F5F5] flex items-center justify-center text-[#CCCCCC]">
                         <Folder className="w-10 h-10" />
                     </div>
                     <div>
-                        <h2 className="text-xl font-bold text-white/90">Cet espace est vide</h2>
-                        <p className="text-sm text-slate-500 max-w-xs mx-auto mt-1">
-                            Utilisez le bouton &quot;Uploader&quot; pour ajouter des fichiers ou créez un dossier.
+                        <h2 className="text-2xl font-serif italic text-black">Cet espace est vide</h2>
+                        <p className="text-sm text-[#999999] max-w-xs mx-auto mt-2">
+                            Commencez par ajouter des fichiers ou créez votre premier dossier.
                         </p>
                     </div>
-                    <div className="flex gap-3 mt-4">
+                    <div className="flex gap-4">
                         <button 
                             onClick={() => fileInputRef.current?.click()}
-                            className="flex items-center gap-2 px-5 py-3 bg-violet-500 hover:bg-violet-400 rounded-2xl text-sm font-bold text-white transition-all"
+                            className="flex items-center gap-2 px-8 py-3 bg-black text-white rounded-full text-xs font-bold hover:scale-105 transition-all shadow-lg shadow-black/10"
                         >
-                            <Upload className="w-4 h-4" /> Uploader un fichier
+                            <Upload className="w-4 h-4" /> Uploader
                         </button>
                         <button 
                             onClick={() => setIsModalOpen(true)}
-                            className="flex items-center gap-2 px-5 py-3 glass glass-hover rounded-2xl text-sm font-bold text-violet-400 border border-white/10"
+                            className="flex items-center gap-2 px-8 py-3 bg-white border border-[#E5E5E5] text-black rounded-full text-xs font-bold hover:border-black transition-all"
                         >
                             <Plus className="w-4 h-4" /> Nouveau Dossier
                         </button>

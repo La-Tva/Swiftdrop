@@ -1,12 +1,13 @@
 "use client";
-
+ 
 import { useState, useRef } from "react";
-import { Folder, File, ArrowLeft, Trash2, Plus, Download, Star, Upload, Edit3, Loader2 } from "lucide-react";
+import { Folder, File, ArrowLeft, Trash2, Plus, Download, Star, Upload, Edit3, Loader2, Search, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CreateModal } from "@/components/CreateModal";
 import { RENDER_BACKEND_URL } from "@/lib/constants";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function SpaceClient({ 
     userId, 
@@ -25,11 +26,17 @@ export function SpaceClient({
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [selectedFile, setSelectedFile] = useState<any>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
 
     const handleFolderClick = (id: string) => {
         router.push(`/space/${spaceId}?folderId=${id}`);
+    };
+
+    const handleFileClick = (file: any) => {
+        setSelectedFile(file);
     };
 
     const handleToggleFavorite = async (id: string, type: 'file' | 'folder') => {
@@ -76,7 +83,9 @@ export function SpaceClient({
     };
 
     const handleDownload = (fileId: string) => {
-        window.open(`${RENDER_BACKEND_URL}/api/download/${fileId}`, '_blank');
+        // Use full URL to ensure it works across domains/ports
+        const url = `${RENDER_BACKEND_URL}/api/download/${fileId}`;
+        window.open(url, '_blank');
     };
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,13 +93,14 @@ export function SpaceClient({
         if (!selectedFiles || selectedFiles.length === 0) return;
 
         setUploading(true);
+        let successCount = 0;
         for (let i = 0; i < selectedFiles.length; i++) {
             const file = selectedFiles[i];
             const formData = new FormData();
-            formData.append('file', file);
             formData.append('spaceId', spaceId);
             formData.append('ownerId', userId);
             formData.append('folderId', folderId || 'null');
+            formData.append('file', file);
 
             try {
                 const res = await fetch(`${RENDER_BACKEND_URL}/api/upload`, {
@@ -99,6 +109,7 @@ export function SpaceClient({
                 });
                 if (res.ok) {
                     toast.success(`${file.name} uploadé !`);
+                    successCount++;
                 } else {
                     toast.error(`Erreur pour ${file.name}`);
                 }
@@ -107,7 +118,9 @@ export function SpaceClient({
             }
         }
         setUploading(false);
-        router.refresh();
+        if (successCount > 0) {
+            router.refresh();
+        }
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -135,6 +148,19 @@ export function SpaceClient({
                         </p>
                     </div>
                 </div>
+                <div className="flex items-center gap-4 flex-1 max-w-md mx-8 hidden md:flex">
+                    <div className="relative w-full group">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-violet-400 transition-colors" />
+                        <input 
+                            type="text" 
+                            placeholder="Rechercher dans cet espace..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-xs focus:outline-none focus:ring-2 focus:ring-violet-500/40 transition-all"
+                        />
+                    </div>
+                </div>
+
                 <div className="flex items-center gap-2">
                     <button 
                         onClick={() => fileInputRef.current?.click()}
@@ -156,7 +182,9 @@ export function SpaceClient({
             {/* Space Explorer Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {/* Folders */}
-                {folders.map((folder) => (
+                {folders
+                  .filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                  .map((folder) => (
                     <div 
                         key={folder._id.toString()} 
                         onClick={() => handleFolderClick(folder._id)}
@@ -195,36 +223,42 @@ export function SpaceClient({
                 ))}
 
                 {/* Files */}
-                {files.map((file) => (
-                    <div key={file._id.toString()} className="glass glass-hover p-4 rounded-2xl flex flex-col gap-4 group relative border border-white/5">
+                {files
+                  .filter(f => f.name.toLowerCase().includes(searchQuery.toLowerCase()))
+                  .map((file) => (
+                    <div 
+                        key={file._id.toString()} 
+                        onClick={() => handleFileClick(file)}
+                        className="glass glass-hover p-4 rounded-2xl flex flex-col gap-4 group relative border border-white/5 cursor-pointer"
+                    >
                         <div className="flex items-start justify-between">
                             <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 group-hover:text-violet-400 transition-colors">
                                 <File className="w-5 h-5" />
                             </div>
                             <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button 
-                                    onClick={() => handleToggleFavorite(file._id, 'file')}
+                                    onClick={(e) => { e.stopPropagation(); handleToggleFavorite(file._id, 'file'); }}
                                     className={`p-1.5 ${file.isFavorite ? 'text-amber-400' : 'text-slate-500'} hover:text-amber-400 transition-colors`}
                                     title="Favori"
                                 >
                                     <Star className={`w-4 h-4 ${file.isFavorite ? 'fill-current' : ''}`} />
                                 </button>
                                 <button 
-                                    onClick={() => handleDownload(file.storageId || file._id)}
+                                    onClick={(e) => { e.stopPropagation(); handleDownload(file._id); }}
                                     className="p-1.5 text-slate-500 hover:text-violet-400 transition-colors"
                                     title="Télécharger"
                                 >
                                     <Download className="w-4 h-4" />
                                 </button>
                                 <button 
-                                    onClick={() => handleRename(file._id, 'file', file.name)}
+                                    onClick={(e) => { e.stopPropagation(); handleRename(file._id, 'file', file.name); }}
                                     className="p-1.5 text-slate-500 hover:text-white transition-colors"
                                     title="Renommer"
                                 >
                                     <Edit3 className="w-4 h-4" />
                                 </button>
                                 <button 
-                                    onClick={() => handleDelete(file._id, 'file')}
+                                    onClick={(e) => { e.stopPropagation(); handleDelete(file._id, 'file'); }}
                                     className="p-1.5 text-slate-500 hover:text-red-400 transition-colors"
                                     title="Supprimer"
                                 >
@@ -279,6 +313,93 @@ export function SpaceClient({
                 spaceId={spaceId} 
                 folderId={folderId}
             />
+
+            {/* Preview Modal */}
+            <AnimatePresence>
+                {selectedFile && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-[#0A0A0B]/90 backdrop-blur-xl"
+                        onClick={() => setSelectedFile(null)}
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.9, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.9, opacity: 0 }}
+                            className="bg-[#111113] border border-white/10 rounded-3xl w-full max-w-5xl h-[85vh] overflow-hidden flex flex-col shadow-2xl"
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="p-6 border-b border-white/5 flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-violet-500/10 flex items-center justify-center text-violet-400">
+                                        <File className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-white tracking-tight">{selectedFile.name}</h3>
+                                        <p className="text-[10px] text-slate-500 uppercase tracking-widest font-black">
+                                            {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • {selectedFile.type}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                     <button 
+                                        onClick={() => handleDownload(selectedFile._id)}
+                                        className="p-3 text-slate-400 hover:text-white transition-colors glass rounded-xl"
+                                        title="Télécharger"
+                                    >
+                                        <Download className="w-5 h-5" />
+                                    </button>
+                                    <button 
+                                        onClick={() => setSelectedFile(null)}
+                                        className="p-3 text-slate-400 hover:text-red-400 transition-colors glass rounded-xl"
+                                    >
+                                        <X className="w-5 h-5" />
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div className="flex-1 bg-black/40 flex items-center justify-center overflow-hidden">
+                                {selectedFile.type.startsWith('image/') ? (
+                                    <img 
+                                        src={`${RENDER_BACKEND_URL}/api/file/${selectedFile._id}`} 
+                                        alt={selectedFile.name}
+                                        className="max-w-full max-h-full object-contain"
+                                    />
+                                ) : selectedFile.type === 'application/pdf' ? (
+                                    <iframe 
+                                        src={`${RENDER_BACKEND_URL}/api/file/${selectedFile._id}`} 
+                                        className="w-full h-full border-none"
+                                    />
+                                ) : selectedFile.type.startsWith('video/') ? (
+                                    <video 
+                                        src={`${RENDER_BACKEND_URL}/api/file/${selectedFile._id}`} 
+                                        controls 
+                                        className="max-w-full max-h-full"
+                                    />
+                                ) : (
+                                    <div className="flex flex-col items-center gap-4 py-20 px-10 text-center">
+                                        <div className="w-24 h-24 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-700">
+                                            <File className="w-12 h-12" />
+                                        </div>
+                                        <div>
+                                            <p className="text-white font-bold text-lg">Aperçu non disponible</p>
+                                            <p className="text-slate-500 text-sm mt-1 mb-8">Ce type de fichier ne peut pas être lu directement ici.</p>
+                                            <button 
+                                                onClick={() => handleDownload(selectedFile._id)}
+                                                className="px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-2xl font-bold flex items-center gap-3 transition-all"
+                                            >
+                                                <Download className="w-5 h-5" /> Télécharger pour voir
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }

@@ -57,6 +57,11 @@ export function DashboardLayout({
                 router.refresh();
             }
         });
+        socket.on('folder_created', (data) => {
+            if (data.spaceId === spaceId) {
+                router.refresh();
+            }
+        });
         return () => { socket.disconnect(); };
     }, [spaceId, router]);
 
@@ -80,10 +85,10 @@ export function DashboardLayout({
             const currentUpload = newUploads[i];
 
             const formData = new FormData();
-            formData.append('file', file);
             formData.append('spaceId', spaceId);
             formData.append('ownerId', userId);
             formData.append('folderId', folderId || 'null');
+            formData.append('file', file);
 
             try {
                 const res = await fetch(`${RENDER_BACKEND_URL}/api/upload`, {

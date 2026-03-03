@@ -51,7 +51,7 @@ export function DashboardLayout({
     const router = useRouter();
 
     useEffect(() => {
-        const socket = io(SOCKET_URL);
+        const socket = io(SOCKET_URL, { transports: ['websocket'] });
         socket.on('file_uploaded', (data) => {
             if (data.spaceId === spaceId) {
                 router.refresh();

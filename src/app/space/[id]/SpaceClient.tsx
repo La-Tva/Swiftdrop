@@ -218,7 +218,7 @@ export function SpaceClient({
                         }}
                         whileHover={{ y: -4 }}
                         onClick={() => handleFolderClick(folder._id)}
-                        className="p-8 rounded-[2rem] border border-[#EEEEEE] bg-[#F5F5F5] hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full overflow-hidden"
+                        className="p-8 rounded-[2rem] border border-[#EEEEEE] bg-[#F5F5F5] hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
                     >
                         <FolderTab />
                         <div className="flex-1 min-w-0 relative z-10">
@@ -240,7 +240,7 @@ export function SpaceClient({
                                     e.stopPropagation(); 
                                     setOpenDropdownId(openDropdownId === folder._id ? null : folder._id); 
                                 }}
-                                className={`p-2.5 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === folder._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
+                                className={`p-2.5 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === folder._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-100 text-[#CCCCCC] hover:text-black'}`}
                             >
                                 <InteractiveIconWrapper>
                                     <MoreHorizontal className="w-5 h-5" />
@@ -286,7 +286,7 @@ export function SpaceClient({
                         }}
                         whileHover={{ y: -4 }}
                         onClick={() => handleFileClick(file)}
-                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full overflow-hidden"
+                        className="p-8 rounded-[2rem] border border-[#E5E5E5] bg-white hover:border-black transition-all cursor-pointer flex flex-col gap-2 group relative h-full"
                     >
                         <FileCorner />
                         <div className="min-w-0 pr-8 relative z-10">
@@ -314,7 +314,7 @@ export function SpaceClient({
                                     e.stopPropagation(); 
                                     setOpenDropdownId(openDropdownId === file._id ? null : file._id); 
                                 }}
-                                className={`p-2.5 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === file._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-0 group-hover:opacity-100 text-[#CCCCCC] hover:text-black'}`}
+                                className={`p-2.5 rounded-full hover:bg-[#F5F5F5] transition-colors bg-white backdrop-blur-md shadow-md shadow-black/5 border border-[#E5E5E5] ${openDropdownId === file._id ? 'opacity-100 bg-[#F5F5F5] text-black' : 'opacity-100 text-[#CCCCCC] hover:text-black'}`}
                             >
                                 <InteractiveIconWrapper>
                                     <MoreHorizontal className="w-5 h-5" />

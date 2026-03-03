@@ -41,7 +41,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-white relative overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-[#0A0503] text-white relative overflow-hidden">
       {/* Subtle Background Detail */}
       <DecorativeWave />
 

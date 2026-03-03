@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className="antialiased overflow-x-hidden bg-[#FFFFFF] text-[#000000]">
+      <body className="antialiased overflow-x-hidden bg-[#0A0503] text-white">
         <Providers>
           {children}
           <Toaster position="top-center" richColors />

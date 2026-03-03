@@ -45,7 +45,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-6 bg-white overflow-hidden">
+    <div className="min-h-screen relative flex items-center justify-center p-6 bg-[#0A0503] text-white overflow-hidden">
       <DecorativeWave />
       
       <motion.div 

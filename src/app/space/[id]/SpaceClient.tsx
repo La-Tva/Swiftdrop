@@ -72,6 +72,7 @@ export function SpaceClient({
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedFile, setSelectedFile] = useState<any>(null);
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+    const [isAddMenuOpen, setIsAddMenuOpen] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const folderInputRef = useRef<HTMLInputElement>(null);
@@ -324,7 +325,8 @@ export function SpaceClient({
                     </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+                {/* Desktop Buttons */}
+                <div className="hidden sm:flex items-center gap-3">
                     <button 
                         onClick={() => fileInputRef.current?.click()}
                         disabled={uploading}
@@ -347,6 +349,39 @@ export function SpaceClient({
                     >
                         <InteractiveIconWrapper><Plus className="w-4 h-4" /></InteractiveIconWrapper> Dossier
                     </button>
+                </div>
+
+                {/* Mobile Dropdown Button */}
+                <div className="sm:hidden relative">
+                    <button 
+                        onClick={() => setIsAddMenuOpen(!isAddMenuOpen)}
+                        className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-bold hover:scale-105 transition-all shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+                    >
+                       {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className={`w-4 h-4 transition-transform ${isAddMenuOpen ? 'rotate-45' : ''}`} />}
+                       Ajouter
+                    </button>
+                    <AnimatePresence>
+                        {isAddMenuOpen && (
+                            <motion.div 
+                                initial={{ opacity: 0, scale: 0.95, y: -5 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.95, y: -5 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute right-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)] border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left"
+                            >
+                                <button onClick={() => { fileInputRef.current?.click(); setIsAddMenuOpen(false); }} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition-colors text-sm text-[#A0A0A0] hover:text-white">
+                                    <Upload className="w-4 h-4" /> Fichiers
+                                </button>
+                                <button onClick={() => { folderInputRef.current?.click(); setIsAddMenuOpen(false); }} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition-colors text-sm text-[#A0A0A0] hover:text-white">
+                                    <FolderOpen className="w-4 h-4" /> Dossier entier
+                                </button>
+                                <div className="h-px w-full bg-white/5 my-1" />
+                                <button onClick={() => { setIsModalOpen(true); setIsAddMenuOpen(false); }} className="flex items-center gap-3 px-4 py-3 hover:bg-white/10 transition-colors text-sm text-[#A0A0A0] hover:text-white">
+                                    <Plus className="w-4 h-4" /> Nouveau Dossier
+                                </button>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </div>
             </nav>
 

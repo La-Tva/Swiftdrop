@@ -39,7 +39,7 @@ export function DashboardClient({
     recentFiles: any[],
     stats: { spacesTotal: number, sharedTotal: number, favoritesTotal: number },
     userName: string,
-    initialFilter?: "all" | "shared" | "favorites" | "recents"
+    initialFilter?: "all" | "favorites" | "recents"
 }) {
   const { data, mutate } = useSWR('/api/dashboard', fetcher, {
       fallbackData: { userSpaces: initialSpaces, recentFiles: initialRecents, stats: initialStats },
@@ -52,7 +52,7 @@ export function DashboardClient({
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState<"all" | "shared" | "favorites" | "recents">(initialFilter || "all");
+  const [filterType, setFilterType] = useState<"all" | "favorites" | "recents">(initialFilter || "all");
   const router = useRouter();
 
   useEffect(() => {
@@ -91,7 +91,6 @@ export function DashboardClient({
   const filteredSpaces = userSpaces.filter(space => {
       const matchesSearch = space.name.toLowerCase().includes(searchQuery.toLowerCase());
       if (filterType === "all") return matchesSearch;
-      if (filterType === "shared") return matchesSearch && (space.sharedWith?.includes(userId) || space.isGlobal);
       // For spaces, we don't have isFavorite yet in the schema usually, but let's assume it might exist or just show all for now
       return matchesSearch;
   });
@@ -163,7 +162,7 @@ export function DashboardClient({
                           visible: { y: 0, opacity: 1 }
                         }}
                         whileHover={{ y: -4 }}
-                        onClick={() => router.push(`/space/${file.spaceId}`)}
+                        onClick={() => router.push(file.folderId && file.folderId !== 'null' ? `/space/${file.spaceId}?folderId=${file.folderId}` : `/space/${file.spaceId}`)}
                         className="minimalist-card flex items-center gap-4 group relative overflow-hidden p-6 h-full"
                     >
                         <FileCorner />
@@ -194,7 +193,7 @@ export function DashboardClient({
                           visible: { y: 0, opacity: 1 }
                         }}
                         whileHover={{ y: -4 }}
-                        onClick={() => router.push(`/space/${file.spaceId}`)}
+                        onClick={() => router.push(file.folderId && file.folderId !== 'null' ? `/space/${file.spaceId}?folderId=${file.folderId}` : `/space/${file.spaceId}`)}
                         className="minimalist-card flex items-center gap-4 group relative overflow-hidden p-6 h-full"
                     >
                         <FileCorner />
@@ -299,7 +298,7 @@ export function DashboardClient({
                   visible: { x: 0, opacity: 1 }
                 }}
                 whileHover={{ x: 4 }}
-                onClick={() => router.push(`/space/${file.spaceId}`)}
+                onClick={() => router.push(file.folderId && file.folderId !== 'null' ? `/space/${file.spaceId}?folderId=${file.folderId}` : `/space/${file.spaceId}`)}
                 className="flex items-center gap-4 group cursor-pointer p-4 rounded-2xl bg-[#0A0503]/50 backdrop-blur-md border border-white/5 hover:border-orange-500/50 hover:bg-white/5 hover:shadow-[0_4px_20px_rgba(249,115,22,0.15)] transition-all"
               >
                 <div className="flex-1 min-w-0">

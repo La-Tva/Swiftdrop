@@ -22,6 +22,7 @@ import { RENDER_BACKEND_URL, SOCKET_URL } from "@/lib/constants";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { useSWRConfig } from "swr";
 import { io } from "socket.io-client";
 import { LivingLogo, PulseIndicator, InteractiveIconWrapper } from "@/components/Animations";
 
@@ -133,6 +134,7 @@ export function DashboardLayout({
     const dropRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { mutate } = useSWRConfig();
     const currentFilter = searchParams.get('filter') || 'all';
 
     // ── Storage fetch ─────────────────────────────────────────────────────────
@@ -156,6 +158,11 @@ export function DashboardLayout({
         const handleRefresh = (data?: any) => {
             if (!data || !data.spaceId || data.spaceId === spaceId || spaceId === 'all') {
                 router.refresh();
+                mutate(
+                    (key: any) => typeof key === 'string' && (key.startsWith('/api/dashboard') || key.startsWith('/api/spaces')),
+                    undefined,
+                    { revalidate: true }
+                );
             }
         };
 
@@ -296,7 +303,7 @@ export function DashboardLayout({
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
-            className="min-h-screen bg-transparent text-foreground selection:bg-orange-500/20 selection:text-white font-sans relative flex overflow-hidden"
+            className="h-[100dvh] w-full bg-transparent text-foreground selection:bg-orange-500/20 selection:text-white font-sans relative flex overflow-hidden lg:h-screen lg:min-h-screen"
         >
             {/* Ambient Glowing Background */}
             <div className="fixed inset-0 pointer-events-none z-0">
@@ -318,7 +325,6 @@ export function DashboardLayout({
                         { icon: LayoutGrid, label: 'Mes Espaces', href: '/main', filter: 'all' },
                         { icon: Star, label: 'Favoris', href: '/main?filter=favorites', filter: 'favorites' },
                         { icon: Clock, label: 'Récents', href: '/main?filter=recents', filter: 'recents' },
-                        { icon: Users, label: 'Partagés', href: '/main?filter=shared', filter: 'shared' },
                     ].map((item, i) => {
                         const isActive = currentFilter === item.filter;
                         return (
@@ -382,7 +388,6 @@ export function DashboardLayout({
                     { icon: LayoutGrid, href: '/main', filter: 'all' },
                     { icon: Star, href: '/main?filter=favorites', filter: 'favorites' },
                     { icon: Clock, href: '/main?filter=recents', filter: 'recents' },
-                    { icon: Users, href: '/main?filter=shared', filter: 'shared' },
                 ].map((item, i) => {
                     const isActive = currentFilter === item.filter;
                     return (

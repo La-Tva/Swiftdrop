@@ -208,7 +208,7 @@ export function NotesClient({
   };
 
   const filteredNotes = notes.filter(
-    (n) =>
+    (n: Note) =>
       n.type === activeTab &&
       (n.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
         n.content.toLowerCase().includes(searchQuery.toLowerCase())),

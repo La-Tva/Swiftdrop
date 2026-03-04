@@ -137,3 +137,23 @@ export async function createSpace(userId: string, name: string) {
 
     return result.insertedId;
 }
+
+/** Returns the breadcrumb trail from root to the given folderId: [{id, name}, ...] */
+export async function getFolderPath(folderId: string | null): Promise<{ id: string; name: string }[]> {
+    if (!folderId || !isValidObjectId(folderId)) return [];
+    const { folders } = await getCollections();
+
+    const trail: { id: string; name: string }[] = [];
+    let currentId: string | null = folderId;
+
+    // Walk up the parentId chain (max 20 depth to avoid infinite loops)
+    for (let i = 0; i < 20 && currentId; i++) {
+        const folder: { _id: any; name: string; parentId?: any } | null = await folders.findOne({ _id: new ObjectId(currentId) }) as any;
+        if (!folder) break;
+        trail.unshift({ id: folder._id.toString(), name: folder.name });
+        currentId = folder.parentId ? folder.parentId.toString() : null;
+    }
+
+    return trail;
+}
+

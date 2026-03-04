@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getCollections } from "@/lib/db";
 import { ObjectId } from "mongodb";
 import { DashboardLayout } from "@/components/DashboardLayout";
-import { getSpaceContents } from "@/lib/services";
+import { getSpaceContents, getFolderPath } from "@/lib/services";
 import { SpaceClient } from "./SpaceClient";
 
 export default async function SpacePage({ 
@@ -28,7 +28,10 @@ export default async function SpacePage({
   if (!space) redirect("/main");
 
   const userId = session.user?.id as string;
-  const contents = await getSpaceContents(id, folderId || null);
+  const [contents, folderPath] = await Promise.all([
+    getSpaceContents(id, folderId || null),
+    getFolderPath(folderId || null),
+  ]);
 
   return (
     <DashboardLayout 
@@ -45,7 +48,9 @@ export default async function SpacePage({
         name={space.name} 
         folders={contents.folders}
         files={contents.files}
+        folderPath={folderPath}
       />
     </DashboardLayout>
   );
 }
+

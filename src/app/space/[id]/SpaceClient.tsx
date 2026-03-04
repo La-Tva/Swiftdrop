@@ -1,7 +1,7 @@
 "use client";
  
 import { useState, useRef } from "react";
-import { Folder, File, ArrowLeft, Trash2, Plus, Download, Star, Upload, Edit3, Loader2, X, MoreHorizontal, FolderOpen } from "lucide-react";
+import { Folder, File, ArrowLeft, Trash2, Plus, Download, Star, Upload, Edit3, Loader2, X, MoreHorizontal, FolderOpen, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { CreateModal } from "@/components/CreateModal";
@@ -41,14 +41,16 @@ export function SpaceClient({
     folderId,
     name, 
     folders, 
-    files 
+    files,
+    folderPath = []
 }: { 
     userId: string, 
     spaceId: string, 
     folderId: string | null,
     name: string, 
     folders: any[], 
-    files: any[] 
+    files: any[],
+    folderPath?: { id: string; name: string }[]
 }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [uploading, setUploading] = useState(false);
@@ -125,8 +127,12 @@ export function SpaceClient({
     };
 
     const handleDownload = (fileId: string) => {
-        // Use full URL to ensure it works across domains/ports
         const url = `${RENDER_BACKEND_URL}/api/download/${fileId}`;
+        window.open(url, '_blank');
+    };
+
+    const handleDownloadFolder = (folderId: string) => {
+        const url = `${RENDER_BACKEND_URL}/api/folders/${folderId}/download`;
         window.open(url, '_blank');
     };
 
@@ -236,17 +242,48 @@ export function SpaceClient({
                 {...({ webkitdirectory: "" } as React.InputHTMLAttributes<HTMLInputElement>)}
             />
 
-            {/* Header Navigation */}
+            {/* Breadcrumb Navigation */}
             <nav className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-4 border-b border-white/5">
-                <div className="flex items-center gap-4 w-full sm:w-auto">
+                <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
                     <Link href="/main" className="p-3 shrink-0 rounded-2xl bg-white/5 border border-white/5 text-white hover:bg-white/10 hover:border-orange-500/50 transition-all">
                         <InteractiveIconWrapper><ArrowLeft className="w-5 h-5" /></InteractiveIconWrapper>
                     </Link>
-                    <div className="min-w-0">
-                        <h1 className="text-3xl font-serif italic tracking-tight truncate text-white">{name}</h1>
-                        <p className="text-[10px] text-[#A0A0A0] font-bold uppercase tracking-widest mt-1">
-                            {folders.length + files.length} éléments dans cet espace
-                        </p>
+
+                    {/* Breadcrumb trail */}
+                    <div className="flex items-center gap-1 min-w-0 flex-wrap">
+                        {/* Space root */}
+                        <Link
+                            href={`/space/${spaceId}`}
+                            className={`text-sm font-serif italic truncate transition-colors ${
+                                folderPath.length === 0
+                                    ? 'text-white pointer-events-none'
+                                    : 'text-[#A0A0A0] hover:text-orange-400'
+                            }`}
+                        >
+                            {name}
+                        </Link>
+
+                        {/* Intermediate folders */}
+                        {folderPath.map((crumb, i) => {
+                            const isLast = i === folderPath.length - 1;
+                            // Build URL: each ancestor is the folderId to navigate to
+                            const href = `/space/${spaceId}?folderId=${crumb.id}`;
+                            return (
+                                <span key={crumb.id} className="flex items-center gap-1 min-w-0">
+                                    <ChevronRight className="w-3 h-3 text-white/20 shrink-0" />
+                                    {isLast ? (
+                                        <span className="text-sm font-bold text-white truncate max-w-[180px]">{crumb.name}</span>
+                                    ) : (
+                                        <Link
+                                            href={href}
+                                            className="text-sm font-medium text-[#A0A0A0] hover:text-orange-400 transition-colors truncate max-w-[120px]"
+                                        >
+                                            {crumb.name}
+                                        </Link>
+                                    )}
+                                </span>
+                            );
+                        })}
                     </div>
                 </div>
                 
@@ -352,6 +389,9 @@ export function SpaceClient({
                                     >
                                         <button onClick={(e) => { e.stopPropagation(); handleToggleFavorite(folder._id, 'folder'); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/10 transition-colors text-sm text-[#A0A0A0] hover:text-white">
                                             <InteractiveIconWrapper><Star className={`w-4 h-4 ${folder.isFavorite ? 'fill-orange-500 text-orange-500' : ''}`} /></InteractiveIconWrapper> {folder.isFavorite ? 'Retirer' : 'Favori'}
+                                        </button>
+                                        <button onClick={(e) => { e.stopPropagation(); handleDownloadFolder(folder._id); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/10 transition-colors text-sm text-[#A0A0A0] hover:text-white">
+                                            <InteractiveIconWrapper><Download className="w-4 h-4" /></InteractiveIconWrapper> Télécharger (.zip)
                                         </button>
                                         <button onClick={(e) => { e.stopPropagation(); handleRename(folder._id, 'folder', folder.name); setOpenDropdownId(null); }} className="flex items-center gap-3 px-4 py-2.5 hover:bg-white/10 transition-colors text-sm text-[#A0A0A0] hover:text-white">
                                             <InteractiveIconWrapper><Edit3 className="w-4 h-4" /></InteractiveIconWrapper> Renommer

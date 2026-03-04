@@ -7,6 +7,7 @@ const multer = require('multer');
 const { GridFsStorage } = require('multer-gridfs-storage');
 const path = require('path');
 const dotenv = require('dotenv');
+const archiver = require('archiver');
 
 dotenv.config();
 
@@ -331,7 +332,30 @@ app.delete('/api/items', async (req, res) => {
     } else if (type === 'folder') {
         const folder = await db.collection('folders').findOne({ _id: new ObjectId(id) });
         const spaceId = folder?.spaceId;
-        await db.collection('folders').deleteOne({ _id: new ObjectId(id) });
+
+        // Recursively delete all nested files and sub-folders
+        async function deleteFolderRecursive(fId) {
+            const foldersCollection = db.collection('folders');
+            const filesCollection = db.collection('files');
+
+            // Delete all files inside this folder
+            const filesInFolder = await filesCollection.find({ folderId: new ObjectId(fId) }).toArray();
+            for (const file of filesInFolder) {
+                try { await bucket.delete(file.storageId); } catch (e) {}
+                await filesCollection.deleteOne({ _id: file._id });
+            }
+
+            // Recurse into sub-folders
+            const subFolders = await foldersCollection.find({ parentId: new ObjectId(fId) }).toArray();
+            for (const sub of subFolders) {
+                await deleteFolderRecursive(sub._id.toString());
+            }
+
+            // Delete the folder itself
+            await foldersCollection.deleteOne({ _id: new ObjectId(fId) });
+        }
+
+        await deleteFolderRecursive(id);
         io.emit('item_deleted', { id, type, spaceId });
     } else {
         const filesCollection = db.collection('files');
@@ -378,6 +402,64 @@ app.post('/api/favorites/toggle', async (req, res) => {
     
     res.json({ success: true, isFavorite: !item.isFavorite });
   } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Recursive ZIP download for a folder
+app.get('/api/folders/:folderId/download', async (req, res) => {
+  try {
+    const { folderId } = req.params;
+    if (!/^[0-9a-fA-F]{24}$/.test(folderId)) {
+      return res.status(400).json({ error: 'Invalid folder ID' });
+    }
+
+    const foldersCollection = db.collection('folders');
+    const filesCollection = db.collection('files');
+
+    // Get root folder name
+    const rootFolder = await foldersCollection.findOne({ _id: new ObjectId(folderId) });
+    if (!rootFolder) return res.status(404).json({ error: 'Folder not found' });
+
+    res.set({
+      'Content-Type': 'application/zip',
+      'Content-Disposition': `attachment; filename="${encodeURIComponent(rootFolder.name)}.zip"`,
+    });
+
+    const archive = archiver('zip', { zlib: { level: 5 } });
+    archive.on('error', (err) => {
+      console.error('Archiver error:', err);
+      if (!res.headersSent) res.status(500).json({ error: 'Archive failed' });
+    });
+    archive.pipe(res);
+
+    // Recursively collect and append files
+    async function appendFolder(fId, zipPath) {
+      const [subFolders, files] = await Promise.all([
+        foldersCollection.find({ parentId: new ObjectId(fId) }).toArray(),
+        filesCollection.find({ folderId: new ObjectId(fId) }).toArray(),
+      ]);
+
+      for (const file of files) {
+        try {
+          const stream = bucket.openDownloadStream(file.storageId);
+          archive.append(stream, { name: zipPath + file.name });
+        } catch (e) {
+          console.error('Stream error for file', file._id, e);
+        }
+      }
+
+      for (const sub of subFolders) {
+        await appendFolder(sub._id.toString(), zipPath + sub.name + '/');
+      }
+    }
+
+    // Also include files directly under the root folder
+    await appendFolder(folderId, rootFolder.name + '/');
+
+    await archive.finalize();
+  } catch (e) {
+    console.error('ZIP download error:', e);
+    if (!res.headersSent) res.status(500).json({ error: e.message });
+  }
 });
 
 // Global Error Handler

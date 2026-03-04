@@ -20,14 +20,17 @@ import { io } from "socket.io-client";
 import { SOCKET_URL, RENDER_BACKEND_URL } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import useSWR from "swr";
 
 import { AnimatedEmptyState, FileCorner, FolderTab, InteractiveIconWrapper } from "@/components/Animations";
 
+const fetcher = (url: string) => fetch(url).then(r => r.json());
+
 export function DashboardClient({ 
     userId, 
-    userSpaces, 
-    recentFiles,
-    stats,
+    userSpaces: initialSpaces, 
+    recentFiles: initialRecents,
+    stats: initialStats,
     userName,
     initialFilter 
 }: { 
@@ -38,6 +41,15 @@ export function DashboardClient({
     userName: string,
     initialFilter?: "all" | "shared" | "favorites" | "recents"
 }) {
+  const { data, mutate } = useSWR('/api/dashboard', fetcher, {
+      fallbackData: { userSpaces: initialSpaces, recentFiles: initialRecents, stats: initialStats },
+      revalidateOnFocus: false,
+  });
+
+  const userSpaces: any[] = data?.userSpaces ?? initialSpaces;
+  const recentFiles: any[] = data?.recentFiles ?? initialRecents;
+  const stats: { spacesTotal: number, sharedTotal: number, favoritesTotal: number } = data?.stats ?? initialStats;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterType, setFilterType] = useState<"all" | "shared" | "favorites" | "recents">(initialFilter || "all");
@@ -54,6 +66,10 @@ export function DashboardClient({
       e.preventDefault();
       e.stopPropagation();
       if (!confirm("Supprimer cet espace et TOUS ses fichiers ?")) return;
+      
+      // Optimistic mutate
+      mutate({ userSpaces: userSpaces.filter(s => s._id !== id), recentFiles, stats }, false);
+
       try {
           const res = await fetch(`${RENDER_BACKEND_URL}/api/items`, {
               method: 'DELETE',
@@ -62,10 +78,13 @@ export function DashboardClient({
           });
           if (res.ok) {
               toast.success("Espace supprimé");
-              router.refresh();
+              mutate(); // revalidate
+          } else {
+              mutate(); // revert on failure
           }
       } catch (err) {
           toast.error("Erreur de suppression");
+          mutate(); // revert on failure
       }
   };
 

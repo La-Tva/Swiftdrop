@@ -1,6 +1,7 @@
 "use client";
  
 import { useState, useRef } from "react";
+import useSWR from "swr";
 import { Folder, File, ArrowLeft, Trash2, Plus, Download, Star, Upload, Edit3, Loader2, X, MoreHorizontal, FolderOpen, ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -9,6 +10,8 @@ import { RENDER_BACKEND_URL } from "@/lib/constants";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedEmptyState, FolderTab, FileCorner, AnimatedSearchLoupe, InteractiveIconWrapper } from "@/components/Animations";
+
+const fetcher = (url: string) => fetch(url).then(r => r.json());
 
 /** Ensure all intermediate folders exist on the server, return leaf folderId */
 async function ensureFolderPath(
@@ -40,9 +43,9 @@ export function SpaceClient({
     spaceId, 
     folderId,
     name, 
-    folders, 
-    files,
-    folderPath = []
+    folders: initialFolders, 
+    files: initialFiles,
+    folderPath: initialFolderPath = []
 }: { 
     userId: string, 
     spaceId: string, 
@@ -52,6 +55,17 @@ export function SpaceClient({
     files: any[],
     folderPath?: { id: string; name: string }[]
 }) {
+    // SWR key — changes when navigating into sub-folders
+    const swrKey = `/api/spaces/${spaceId}/contents${folderId ? `?folderId=${folderId}` : ''}`;
+    const { data, mutate } = useSWR(swrKey, fetcher, {
+        fallbackData: { folders: initialFolders, files: initialFiles, folderPath: initialFolderPath },
+        revalidateOnFocus: false,
+    });
+
+    const folders: any[] = data?.folders ?? initialFolders;
+    const files: any[] = data?.files ?? initialFiles;
+    const folderPath: { id: string; name: string }[] = data?.folderPath ?? initialFolderPath;
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -61,6 +75,8 @@ export function SpaceClient({
     const fileInputRef = useRef<HTMLInputElement>(null);
     const folderInputRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
+
+    const refresh = () => mutate();
 
     const handleFolderClick = (id: string) => {
         router.push(`/space/${spaceId}?folderId=${id}`);
@@ -77,7 +93,7 @@ export function SpaceClient({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, type })
             });
-            router.refresh();
+            refresh();
             toast.success("Favoris mis à jour");
         } catch (err) {
             toast.error("Erreur lors de la mise en favori");
@@ -86,16 +102,23 @@ export function SpaceClient({
 
     const handleDelete = async (id: string, type: 'file' | 'folder') => {
         if (!confirm("Supprimer cet élément ?")) return;
+        // Optimistic update
+        if (type === 'folder') {
+            mutate({ folders: folders.filter(f => f._id !== id), files, folderPath }, false);
+        } else {
+            mutate({ folders, files: files.filter(f => f._id !== id), folderPath }, false);
+        }
         try {
             await fetch(`${RENDER_BACKEND_URL}/api/items`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, type })
             });
-            router.refresh();
             toast.success("Supprimé");
+            refresh();
         } catch (err) {
             toast.error("Erreur de suppression");
+            refresh(); // revert
         }
     };
 
@@ -119,7 +142,7 @@ export function SpaceClient({
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, type, newName })
             });
-            router.refresh();
+            refresh();
             toast.success("Renommé avec succès");
         } catch (err) {
             toast.error("Erreur de renommage");
@@ -167,7 +190,7 @@ export function SpaceClient({
         }
         setUploading(false);
         if (successCount > 0) {
-            router.refresh();
+            refresh();
         }
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
@@ -219,7 +242,7 @@ export function SpaceClient({
         }
 
         setUploading(false);
-        if (successCount > 0) router.refresh();
+        if (successCount > 0) refresh();
         if (folderInputRef.current) folderInputRef.current.value = '';
     };
 

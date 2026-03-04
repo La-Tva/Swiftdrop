@@ -137,7 +137,7 @@ export function NotesClient({
   );
 
   return (
-    <div className="flex flex-col h-full bg-[#0A0503] text-white">
+    <div className="flex flex-col h-full bg-[#0A0503]/40 backdrop-blur-xl border border-white/5 rounded-3xl overflow-hidden text-white p-6">
       {/* Header and Search */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>

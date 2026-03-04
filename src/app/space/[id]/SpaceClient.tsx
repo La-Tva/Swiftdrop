@@ -450,7 +450,7 @@ export function SpaceClient({
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -5 }}
                 transition={{ duration: 0.15 }}
-                className="absolute right-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)] border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left"
+                className="absolute left-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)] border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left"
               >
                 <button
                   onClick={() => {

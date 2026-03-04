@@ -20,7 +20,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { RENDER_BACKEND_URL, SOCKET_URL } from "@/lib/constants";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
 import { useSWRConfig } from "swr";
@@ -139,9 +139,11 @@ export function DashboardLayout({
   const [storageUsed, setStorageUsed] = useState(0);
   const dropRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const { mutate } = useSWRConfig();
-  const currentFilter = searchParams.get("filter") || "all";
+  const currentFilter =
+    pathname === "/notes" ? "notes" : searchParams.get("filter") || "all";
 
   // ── Storage fetch ─────────────────────────────────────────────────────────
   const fetchStorage = useCallback(async () => {

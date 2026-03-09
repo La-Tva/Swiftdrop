@@ -510,14 +510,14 @@ export function NotesClient({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-[120] flex ${editingNote.type === "doc" ? "items-stretch justify-stretch" : "items-center justify-center p-4"} bg-black/80 backdrop-blur-md`}
+            className={`fixed inset-0 z-[120] flex overflow-hidden ${editingNote.type === "doc" ? "items-stretch justify-stretch" : "items-center justify-center p-4"} bg-black/80 backdrop-blur-md`}
           >
             <motion.div
               initial={{ scale: 0.98, y: 20 }}
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.98, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className={`bg-[#0A0503] flex flex-col border border-white/10 shadow-[0_20px_80px_rgba(249,115,22,0.15)] relative overflow-hidden
+              className={`bg-[#0A0503] flex flex-col border border-white/10 shadow-[0_20px_80px_rgba(249,115,22,0.15)] relative overflow-hidden max-h-full
                 ${editingNote.type === "doc" ? "w-full h-full rounded-none md:rounded-3xl md:m-6 md:h-[calc(100vh-3rem)]" : "w-full max-w-lg rounded-3xl p-6"}
               `}
             >

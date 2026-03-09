@@ -393,7 +393,10 @@ app.patch("/api/items/rename", async (req, res) => {
 
 app.delete("/api/items", async (req, res) => {
   try {
-    const { id, type } = req.body;
+    const { id, type, userId } = req.body;
+    const user = userId ? await db.collection("users").findOne({ _id: new ObjectId(userId) }) : null;
+    const senderName = user?.name || "Un utilisateur";
+
     if (type === "space") {
       const spaceId = new ObjectId(id);
       const filesCollection = db.collection("files");
@@ -404,14 +407,26 @@ app.delete("/api/items", async (req, res) => {
         } catch (e) {}
         await filesCollection.deleteOne({ _id: file._id });
       }
+      const space = await db.collection("spaces").findOne({ _id: spaceId });
+      const spaceName = space?.name || "Espace";
+      const isGlobal = space?.isGlobal || false;
+
       await db.collection("folders").deleteMany({ spaceId });
       await db.collection("spaces").deleteOne({ _id: spaceId });
-      io.emit("space_deleted", { spaceId: id });
+      
+      io.emit("space_deleted", { 
+        spaceId: id, 
+        name: spaceName,
+        senderName,
+        isGlobal
+      });
     } else if (type === "folder") {
-      const folder = await db
+      const folderData = await db
         .collection("folders")
         .findOne({ _id: new ObjectId(id) });
-      const spaceId = folder?.spaceId;
+      const spaceId = folderData?.spaceId;
+      const folderName = folderData?.name || "un dossier";
+      const isGlobal = spaceId?.toString() === global.GLOBAL_SPACE_ID;
 
       // Recursively delete all nested files and sub-folders
       async function deleteFolderRecursive(fId) {
@@ -442,17 +457,34 @@ app.delete("/api/items", async (req, res) => {
       }
 
       await deleteFolderRecursive(id);
-      io.emit("item_deleted", { id, type, spaceId });
+      io.emit("item_deleted", { 
+        id, 
+        type, 
+        spaceId, 
+        name: folderName,
+        senderName,
+        isGlobal
+      });
     } else {
       const filesCollection = db.collection("files");
       const file = await filesCollection.findOne({ _id: new ObjectId(id) });
       if (file) {
         const spaceId = file.spaceId;
+        const fileName = file.name;
+        const isGlobal = spaceId?.toString() === global.GLOBAL_SPACE_ID;
+
         try {
           await bucket.delete(file.storageId);
         } catch (e) {}
         await filesCollection.deleteOne({ _id: new ObjectId(id) });
-        io.emit("item_deleted", { id, type, spaceId });
+        io.emit("item_deleted", { 
+          id, 
+          type, 
+          spaceId,
+          name: fileName,
+          senderName,
+          isGlobal
+        });
       }
     }
     res.json({ success: true });
@@ -660,13 +692,22 @@ app.put("/api/notes/:id", async (req, res) => {
 app.delete("/api/notes/:id", async (req, res) => {
   try {
     const { id } = req.params;
+    const userId = req.query.userId;
+    const user = userId ? await db.collection("users").findOne({ _id: new ObjectId(userId) }) : null;
+    const senderName = user?.name || "Un utilisateur";
 
-    const result = await db.collection("notes").deleteOne({
-      _id: new ObjectId(id),
+    const note = await db.collection("notes").findOne({ _id: new ObjectId(id) });
+    const label = note?.label || "une note";
+
+    await db.collection("notes").deleteOne({ _id: new ObjectId(id) });
+    
+    io.emit("note_deleted", { 
+      id, 
+      label,
+      senderName,
+      isGlobal: true 
     });
-
-    if (result.deletedCount === 0)
-      return res.status(404).json({ error: "Note not found" });
+    
     res.json({ success: true });
   } catch (e) {
     res.status(500).json({ error: e.message });

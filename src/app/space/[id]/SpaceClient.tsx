@@ -147,7 +147,7 @@ export function SpaceClient({
       await fetch(`${RENDER_BACKEND_URL}/api/items`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, type }),
+        body: JSON.stringify({ id, type, userId }),
       });
       toast.success("Supprimé");
       refresh();

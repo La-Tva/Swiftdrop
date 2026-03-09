@@ -181,6 +181,7 @@ export function DashboardLayout({
           if (action === "upload") body = `${data.senderName} a ajouté le fichier : ${data.fileName}`;
           else if (action === "folder") body = `${data.senderName} a créé le dossier : ${data.name}`;
           else if (action === "note") body = `${data.senderName} a ajouté une note/lien : ${data.label}`;
+          else if (action === "delete") body = `${data.senderName} a supprimé : ${data.name || data.label}`;
 
           if (body) {
             new Notification(title, {
@@ -219,8 +220,9 @@ export function DashboardLayout({
     });
     socket.on("folder_created", (data) => handleRefresh(data, "folder"));
     socket.on("note_created", (data) => handleRefresh(data, "note"));
+    socket.on("note_deleted", (data) => handleRefresh(data, "delete"));
     socket.on("item_deleted", (data) => {
-      handleRefresh(data);
+      handleRefresh(data, "delete");
       fetchStorage();
     });
     socket.on("item_renamed", (data) => handleRefresh(data));

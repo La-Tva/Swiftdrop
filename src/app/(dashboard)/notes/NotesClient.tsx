@@ -94,7 +94,7 @@ export function NotesClient({
     mutate({ notes: newNotes }, false);
 
     try {
-      const res = await fetch(`${RENDER_BACKEND_URL}/api/notes/${id}`, {
+      const res = await fetch(`${RENDER_BACKEND_URL}/api/notes/${id}?userId=${userId}`, {
         method: "DELETE",
       });
       if (res.ok) {

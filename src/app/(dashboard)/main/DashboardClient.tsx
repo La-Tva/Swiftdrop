@@ -74,7 +74,7 @@ export function DashboardClient({
           const res = await fetch(`${RENDER_BACKEND_URL}/api/items`, {
               method: 'DELETE',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ id, type: 'space' })
+              body: JSON.stringify({ id, type: 'space', userId })
           });
           if (res.ok) {
               toast.success("Espace supprimé");

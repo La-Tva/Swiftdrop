@@ -624,12 +624,12 @@ export function NotesClient({
                   </div>
 
                   {/* Editor Body */}
-                  <div className="flex-1 w-full bg-[#110A07] overflow-y-auto custom-scrollbar flex justify-center p-4 md:p-8">
+                  <div className="flex-1 min-h-0 w-full bg-[#110A07] overflow-y-auto custom-scrollbar flex justify-center p-4 md:p-8">
                     <textarea
                       value={editContent}
                       onChange={(e) => setEditContent(e.target.value)}
                       placeholder="Identifiez vos idées ici..."
-                      className="w-full max-w-4xl bg-transparent text-[#E0E0E0] text-sm md:text-base leading-relaxed tracking-wide resize-none focus:outline-none min-h-full placeholder-[#808080]"
+                      className="w-full max-w-4xl h-full bg-transparent text-[#E0E0E0] text-sm md:text-base leading-relaxed tracking-wide resize-none focus:outline-none min-h-full placeholder-[#808080]"
                       spellCheck="false"
                     />
                   </div>

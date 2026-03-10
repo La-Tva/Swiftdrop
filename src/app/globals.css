@@ -38,6 +38,9 @@
     --color-input: rgba(255, 255, 255, 0.05);
     --color-ring: #F97316;
 
+    --color-private: #00BFA5;
+    --color-private-accent: #009688;
+
     --radius-lg: 2rem;
     --radius-md: 1.5rem;
     --radius-sm: 1rem;

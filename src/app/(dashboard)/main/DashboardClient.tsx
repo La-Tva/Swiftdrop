@@ -240,7 +240,10 @@ export function DashboardClient({
                       <FolderTab />
                       <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-bl-[100px] group-hover:bg-white/10 transition-colors -z-10" />
                       <div className="flex items-start justify-between relative z-10">
-                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-orange-500 group-hover:border-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-all">
+                        <div className={`w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white transition-all 
+                          ${space.isGlobal 
+                            ? 'group-hover:bg-orange-500 group-hover:border-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.5)]' 
+                            : 'group-hover:bg-private group-hover:border-private group-hover:shadow-[0_0_15px_rgba(0,191,165,0.5)]'}`}>
                           <InteractiveIconWrapper><Folder className="w-6 h-6 fill-current opacity-80 group-hover:opacity-100" /></InteractiveIconWrapper>
                         </div>
                         {!space.isGlobal && (
@@ -254,7 +257,12 @@ export function DashboardClient({
                         )}
                       </div>
                       <div>
-                        <h3 className="text-xl font-bold text-white group-hover:text-orange-500 group-hover:drop-shadow-[0_0_10px_rgba(249,115,22,0.5)] transition-all">{space.name}</h3>
+                        <h3 className={`text-xl font-bold text-white transition-all 
+                          ${space.isGlobal 
+                            ? 'group-hover:text-orange-500 group-hover:drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]' 
+                            : 'group-hover:text-private group-hover:drop-shadow-[0_0_10px_rgba(0,191,165,0.5)]'}`}>
+                          {space.name}
+                        </h3>
                         <div className="flex items-center gap-2 mt-1">
                           <p className="text-[10px] text-[#A0A0A0] font-bold uppercase tracking-widest" suppressHydrationWarning>
                               {new Date(space.createdAt).toLocaleDateString()}

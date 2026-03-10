@@ -46,6 +46,7 @@ export default async function SpacePage({
         spaceId={id} 
         folderId={folderId || null}
         name={space.name} 
+        isGlobal={!!space.isGlobal}
         folders={contents.folders}
         files={contents.files}
         folderPath={folderPath}

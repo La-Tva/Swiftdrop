@@ -68,6 +68,7 @@ export function SpaceClient({
   name,
   folders: initialFolders,
   files: initialFiles,
+  isGlobal,
   folderPath: initialFolderPath = [],
 }: {
   userId: string;
@@ -76,6 +77,7 @@ export function SpaceClient({
   name: string;
   folders: any[];
   files: any[];
+  isGlobal?: boolean;
   folderPath?: { id: string; name: string }[];
 }) {
   // SWR key — changes when navigating into sub-folders
@@ -328,7 +330,7 @@ export function SpaceClient({
         <div className="flex items-center gap-3 w-full sm:w-auto min-w-0">
           <Link
             href="/main"
-            className="p-3 shrink-0 rounded-2xl bg-white/5 border border-white/5 text-white hover:bg-white/10 hover:border-orange-500/50 transition-all"
+            className={`p-3 shrink-0 rounded-2xl bg-white/5 border border-white/5 text-white hover:bg-white/10 transition-all ${isGlobal ? 'hover:border-orange-500/50' : 'hover:border-private/50'}`}
           >
             <InteractiveIconWrapper>
               <ArrowLeft className="w-5 h-5" />
@@ -343,7 +345,9 @@ export function SpaceClient({
               className={`text-sm font-serif italic truncate transition-colors ${
                 folderPath.length === 0
                   ? "text-white pointer-events-none"
-                  : "text-[#A0A0A0] hover:text-orange-400"
+                  : isGlobal 
+                    ? "text-[#A0A0A0] hover:text-orange-400" 
+                    : "text-[#A0A0A0] hover:text-private"
               }`}
             >
               {name}
@@ -367,7 +371,7 @@ export function SpaceClient({
                   ) : (
                     <Link
                       href={href}
-                      className="text-sm font-medium text-[#A0A0A0] hover:text-orange-400 transition-colors truncate max-w-[120px]"
+                      className={`text-sm font-medium text-[#A0A0A0] transition-colors truncate max-w-[120px] ${isGlobal ? 'hover:text-orange-400' : 'hover:text-private'}`}
                     >
                       {crumb.name}
                     </Link>
@@ -386,7 +390,7 @@ export function SpaceClient({
               placeholder="Rechercher..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-[#0A0503]/50 backdrop-blur-md border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-xs text-white placeholder-[#A0A0A0] focus:outline-none focus:border-orange-500 focus:bg-[#0A0503] focus:shadow-[0_0_20px_rgba(249,115,22,0.1)] transition-all hover:border-white/20"
+              className={`w-full bg-[#0A0503]/50 backdrop-blur-md border border-white/5 rounded-2xl py-3 pl-12 pr-4 text-xs text-white placeholder-[#A0A0A0] focus:outline-none transition-all hover:border-white/20 ${isGlobal ? 'focus:border-orange-500 focus:shadow-[0_0_20px_rgba(249,115,22,0.1)]' : 'focus:border-private focus:shadow-[0_0_20px_rgba(0,191,165,0.1)]'}`}
             />
           </div>
         </div>
@@ -396,7 +400,10 @@ export function SpaceClient({
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={uploading}
-            className="group flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-bold hover:scale-105 transition-all shadow-[0_4px_20px_rgba(249,115,22,0.3)] disabled:opacity-50"
+            className={`group flex items-center justify-center gap-2 px-6 py-3 text-white rounded-full text-xs font-bold hover:scale-105 transition-all disabled:opacity-50 
+              ${isGlobal 
+                ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-[0_4px_20px_rgba(249,115,22,0.3)]' 
+                : 'bg-gradient-to-r from-private to-private-accent shadow-[0_4px_20px_rgba(0,191,165,0.3)]'}`}
           >
             {uploading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -410,7 +417,10 @@ export function SpaceClient({
           <button
             onClick={() => folderInputRef.current?.click()}
             disabled={uploading}
-            className="group flex items-center justify-center gap-2 px-6 py-3 bg-[#0A0503]/50 backdrop-blur-md border border-orange-500/20 text-orange-400 rounded-full text-xs font-bold hover:border-orange-500/60 hover:bg-orange-500/10 transition-all disabled:opacity-50"
+            className={`group flex items-center justify-center gap-2 px-6 py-3 bg-[#0A0503]/50 backdrop-blur-md border rounded-full text-xs font-bold transition-all disabled:opacity-50 
+              ${isGlobal 
+                ? 'border-orange-500/20 text-orange-400 hover:border-orange-500/60 hover:bg-orange-500/10' 
+                : 'border-private/20 text-private hover:border-private/60 hover:bg-private/10'}`}
           >
             <InteractiveIconWrapper>
               <FolderOpen className="w-4 h-4 transition-transform group-hover:-translate-y-0.5" />
@@ -419,7 +429,7 @@ export function SpaceClient({
           </button>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-[#0A0503]/50 backdrop-blur-md border border-white/10 text-white rounded-full text-xs font-bold hover:border-orange-500/50 hover:bg-white/5 transition-all"
+            className={`flex items-center justify-center gap-2 px-6 py-3 bg-[#0A0503]/50 backdrop-blur-md border border-white/10 text-white rounded-full text-xs font-bold hover:bg-white/5 transition-all ${isGlobal ? 'hover:border-orange-500/50' : 'hover:border-private/50'}`}
           >
             <InteractiveIconWrapper>
               <Plus className="w-4 h-4" />
@@ -432,7 +442,10 @@ export function SpaceClient({
         <div className="xl:hidden relative">
           <button
             onClick={() => setIsAddMenuOpen(!isAddMenuOpen)}
-            className="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-bold hover:scale-105 transition-all shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+            className={`flex items-center justify-center gap-2 px-6 py-3 text-white rounded-full text-xs font-bold hover:scale-105 transition-all 
+              ${isGlobal 
+                ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-[0_4px_20px_rgba(249,115,22,0.3)]' 
+                : 'bg-gradient-to-r from-private to-private-accent shadow-[0_4px_20px_rgba(0,191,165,0.3)]'}`}
           >
             {uploading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -515,7 +528,10 @@ export function SpaceClient({
               <FolderTab />
               <div className="flex-1 min-w-0 relative z-10 w-full">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 shrink-0 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white group-hover:bg-orange-500 group-hover:border-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.5)] transition-all">
+                  <div className={`w-12 h-12 shrink-0 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white transition-all 
+                    ${isGlobal 
+                      ? 'group-hover:bg-orange-500 group-hover:border-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.5)]' 
+                      : 'group-hover:bg-private group-hover:border-private group-hover:shadow-[0_0_15px_rgba(0,191,165,0.5)]'}`}>
                     <InteractiveIconWrapper>
                       {folder.isUploaded ? (
                         <UploadCloud className="w-5 h-5 fill-current opacity-80 group-hover:opacity-100" />
@@ -525,13 +541,17 @@ export function SpaceClient({
                     </InteractiveIconWrapper>
                   </div>
                   <div className="flex-1 min-w-0 pr-8">
-                    <p className="text-lg font-bold text-white group-hover:text-orange-500 group-hover:drop-shadow-[0_0_10px_rgba(249,115,22,0.5)] transition-all truncate pb-0.5">
+                    <p className={`text-lg font-bold text-white transition-all truncate pb-0.5 
+                      ${isGlobal 
+                        ? 'group-hover:text-orange-500 group-hover:drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]' 
+                        : 'group-hover:text-private group-hover:drop-shadow-[0_0_10px_rgba(0,191,165,0.5)]'}`}>
                       {folder.name}
                     </p>
                     <div className="flex items-center gap-2 mt-0.5">
                       {folder.isUploaded && (
                         <>
-                          <span className="text-[10px] text-orange-400 font-bold uppercase tracking-widest bg-orange-500/10 px-1.5 rounded-sm">
+                          <span className={`text-[10px] font-bold uppercase tracking-widest px-1.5 rounded-sm 
+                            ${isGlobal ? 'text-orange-400 bg-orange-500/10' : 'text-private bg-private/10'}`}>
                             Uploadé
                           </span>
                           <div className="w-1 h-1 rounded-full bg-white/20" />
@@ -544,7 +564,7 @@ export function SpaceClient({
                         <>
                           <div className="w-1 h-1 rounded-full bg-white/20" />
                           <InteractiveIconWrapper>
-                            <Star className="w-3 h-3 text-orange-500 fill-orange-500" />
+                            <Star className={`w-3 h-3 fill-current ${isGlobal ? 'text-orange-500' : 'text-private shadow-[0_0_10px_rgba(0,191,165,0.5)]'}`} />
                           </InteractiveIconWrapper>
                         </>
                       )}
@@ -590,7 +610,7 @@ export function SpaceClient({
                       >
                         <InteractiveIconWrapper>
                           <Star
-                            className={`w-4 h-4 ${folder.isFavorite ? "fill-orange-500 text-orange-500" : ""}`}
+                            className={`w-4 h-4 ${folder.isFavorite ? (isGlobal ? "fill-orange-500 text-orange-500" : "fill-private text-private") : ""}`}
                           />
                         </InteractiveIconWrapper>{" "}
                         {folder.isFavorite ? "Retirer" : "Favori"}
@@ -660,7 +680,10 @@ export function SpaceClient({
             >
               <FileCorner />
               <div className="min-w-0 pr-8 relative z-10">
-                <h3 className="text-base font-sans font-bold truncate text-white group-hover:text-orange-500 group-hover:drop-shadow-[0_0_10px_rgba(249,115,22,0.5)] transition-all">
+                <h3 className={`text-base font-sans font-bold truncate text-white transition-all 
+                  ${isGlobal 
+                    ? 'group-hover:text-orange-500 group-hover:drop-shadow-[0_0_10px_rgba(249,115,22,0.5)]' 
+                    : 'group-hover:text-private group-hover:drop-shadow-[0_0_10px_rgba(0,191,165,0.5)]'}`}>
                   {file.name}
                 </h3>
                 <div className="flex items-center gap-2 mt-1">
@@ -674,7 +697,7 @@ export function SpaceClient({
                   {file.isFavorite && (
                     <>
                       <div className="w-1 h-1 rounded-full bg-white/20" />
-                      <Star className="w-3 h-3 text-orange-500 fill-orange-500 drop-shadow-[0_0_10px_rgba(249,115,22,0.8)]" />
+                      <Star className={`w-3 h-3 fill-current ${isGlobal ? 'text-orange-500 drop-shadow-[0_0_10px_rgba(249,115,22,0.8)]' : 'text-private drop-shadow-[0_0_10px_rgba(0,191,165,0.8)]'}`} />
                     </>
                   )}
                 </div>
@@ -785,7 +808,10 @@ export function SpaceClient({
           <div className="flex flex-wrap gap-4 justify-center">
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 shadow-[0_4px_20px_rgba(249,115,22,0.3)] text-white rounded-full font-bold hover:scale-105 transition-all outline-none"
+              className={`flex items-center gap-2 px-8 py-4 text-white rounded-full font-bold hover:scale-105 transition-all outline-none 
+                ${isGlobal 
+                  ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-[0_4px_20px_rgba(249,115,22,0.3)]' 
+                  : 'bg-gradient-to-r from-private to-private-accent shadow-[0_4px_20px_rgba(0,191,165,0.3)]'}`}
             >
               <InteractiveIconWrapper>
                 <Upload className="w-4 h-4" />
@@ -794,7 +820,10 @@ export function SpaceClient({
             </button>
             <button
               onClick={() => folderInputRef.current?.click()}
-              className="flex items-center gap-2 px-8 py-4 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded-full font-bold hover:scale-105 hover:bg-orange-500/20 transition-all outline-none"
+              className={`flex items-center gap-2 px-8 py-4 rounded-full font-bold hover:scale-105 transition-all outline-none 
+                ${isGlobal 
+                  ? 'bg-orange-500/10 border border-orange-500/30 text-orange-400 hover:bg-orange-500/20' 
+                  : 'bg-private/10 border border-private/30 text-private hover:bg-private/20'}`}
             >
               <InteractiveIconWrapper>
                 <FolderOpen className="w-4 h-4" />

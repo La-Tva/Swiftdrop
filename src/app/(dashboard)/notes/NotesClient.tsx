@@ -322,7 +322,7 @@ export function NotesClient({
           </button>
           <button
             onClick={() => setActiveSpace("private")}
-            className={`px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-1.5 ${activeSpace === "private" ? "bg-orange-500 text-white shadow-lg" : "text-[#A0A0A0] hover:text-white"}`}
+            className={`px-3 py-1.5 rounded-lg text-[10px] md:text-xs font-bold transition-all flex items-center gap-1.5 ${activeSpace === "private" ? "bg-private text-white shadow-lg" : "text-[#A0A0A0] hover:text-white"}`}
           >
             <Lock className="w-3 h-3" /> Privé
           </button>
@@ -349,12 +349,16 @@ export function NotesClient({
             {filteredNotes.map((note: Note) => (
               <div
                 key={note._id}
-                className={`group relative bg-[#0A0503]/50 border border-white/10 rounded-2xl p-4 md:p-5 hover:border-orange-500/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.1)] transition-all flex flex-col ${note.type === "link" ? "min-h-[220px] md:min-h-[260px]" : "h-40 md:h-48"}`}
+                className={`group relative bg-[#0A0503]/50 border border-white/10 rounded-2xl p-4 md:p-5 transition-all flex flex-col 
+                  ${note.isPrivate 
+                    ? "hover:border-private/50 hover:shadow-[0_0_20px_rgba(0,191,165,0.1)]" 
+                    : "hover:border-orange-500/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.1)]"}
+                  ${note.type === "link" ? "min-h-[220px] md:min-h-[260px]" : "h-40 md:h-48"}`}
               >
                 {/* Header of Card */}
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex items-center gap-3 overflow-hidden">
-                    <div className="w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center text-orange-500 transition-colors">
+                    <div className={`w-8 h-8 md:w-10 md:h-10 shrink-0 rounded-xl bg-black/40 border border-white/5 flex items-center justify-center transition-colors ${note.isPrivate ? 'text-private' : 'text-orange-500'}`}>
                       {note.type === "link" ? (
                         <LinkIcon className="w-4 h-4 md:w-5 md:h-5" />
                       ) : (
@@ -364,7 +368,7 @@ export function NotesClient({
                     <div className="min-w-0">
                       <h3
                         onClick={() => openEditor(note)}
-                        className="font-bold text-white truncate text-sm md:text-base cursor-pointer hover:text-orange-400 transition-colors"
+                        className={`font-bold text-white truncate text-sm md:text-base cursor-pointer transition-colors ${note.isPrivate ? 'hover:text-private' : 'hover:text-orange-400'}`}
                       >
                         {note.label}
                       </h3>
@@ -537,16 +541,16 @@ export function NotesClient({
                   )}
                 </div>
                 
-                <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                <div className={`flex items-center gap-3 bg-white/5 border rounded-xl px-4 py-3 transition-colors ${isNewPrivate ? 'border-private/50' : 'border-white/10'}`}>
                   <input
                     type="checkbox"
                     id="isPrivate"
                     checked={isNewPrivate}
                     onChange={(e) => setIsNewPrivate(e.target.checked)}
-                    className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                    className={`w-4 h-4 rounded border-gray-300 focus:ring-private ${isNewPrivate ? 'text-private' : 'text-orange-600'}`}
                   />
                   <label htmlFor="isPrivate" className="text-sm font-medium text-white flex items-center gap-2 cursor-pointer">
-                    {isNewPrivate ? <Lock className="w-3.5 h-3.5 text-orange-500" /> : <Globe className="w-3.5 h-3.5 text-[#A0A0A0]" />}
+                    {isNewPrivate ? <Lock className="w-3.5 h-3.5 text-private" /> : <Globe className="w-3.5 h-3.5 text-[#A0A0A0]" />}
                     Rendre ce contenu privé
                   </label>
                 </div>
@@ -561,7 +565,10 @@ export function NotesClient({
                   <button
                     type="submit"
                     disabled={isSubmitting || !newLabel || !newContent}
-                    className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-xl font-bold text-sm flex items-center gap-2"
+                    className={`px-5 py-2.5 disabled:opacity-50 text-white rounded-xl font-bold text-sm flex items-center gap-2 transition-all 
+                      ${isNewPrivate 
+                        ? 'bg-private hover:bg-private-accent shadow-[0_0_15px_rgba(0,191,165,0.4)]' 
+                        : 'bg-orange-500 hover:bg-orange-600 shadow-[0_0_15px_rgba(249,115,22,0.4)]'}`}
                   >
                     {isSubmitting ? (
                       <Loader2 className="w-4 h-4 animate-spin" />
@@ -630,16 +637,16 @@ export function NotesClient({
                         className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
                       />
                     </div>
-                    <div className="flex items-center gap-3 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                    <div className={`flex items-center gap-3 bg-white/5 border rounded-xl px-4 py-3 transition-colors ${isEditPrivate ? 'border-private/50' : 'border-white/10'}`}>
                       <input
                         type="checkbox"
                         id="editIsPrivate"
                         checked={isEditPrivate}
                         onChange={(e) => setIsEditPrivate(e.target.checked)}
-                        className="w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                        className={`w-4 h-4 rounded border-gray-300 focus:ring-private ${isEditPrivate ? 'text-private' : 'text-orange-600'}`}
                       />
                       <label htmlFor="editIsPrivate" className="text-sm font-medium text-white flex items-center gap-2 cursor-pointer">
-                        {isEditPrivate ? <Lock className="w-3.5 h-3.5 text-orange-500" /> : <Globe className="w-3.5 h-3.5 text-[#A0A0A0]" />}
+                        {isEditPrivate ? <Lock className="w-3.5 h-3.5 text-private" /> : <Globe className="w-3.5 h-3.5 text-[#A0A0A0]" />}
                         Contenu privé
                       </label>
                     </div>
@@ -700,7 +707,10 @@ export function NotesClient({
                             editContent === editingNote.content &&
                             isEditPrivate === editingNote.isPrivate)
                         }
-                        className="flex items-center gap-2 px-5 py-2.5 bg-orange-500 hover:bg-orange-600 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all shadow-[0_0_15px_rgba(249,115,22,0.4)]"
+                        className={`flex items-center gap-2 px-5 py-2.5 disabled:opacity-50 text-white rounded-xl text-xs font-bold transition-all 
+                          ${isEditPrivate 
+                            ? "bg-private hover:bg-private-accent shadow-[0_0_15px_rgba(0,191,165,0.4)]" 
+                            : "bg-orange-500 hover:bg-orange-600 shadow-[0_0_15px_rgba(249,115,22,0.4)]"}`}
                       >
                         {isUpdating ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -727,16 +737,16 @@ export function NotesClient({
                       <List className="w-4 h-4" />
                     </button>
                     <div className="w-px h-4 bg-white/10 mx-1" />
-                    <div className="flex items-center gap-2 px-3 py-1 bg-black/30 rounded-lg border border-white/5 ml-auto">
+                    <div className={`flex items-center gap-2 px-3 py-1 bg-black/30 rounded-lg border border-white/5 ml-auto`}>
                       <input
                         type="checkbox"
                         id="editorIsPrivate"
                         checked={isEditPrivate}
                         onChange={(e) => setIsEditPrivate(e.target.checked)}
-                        className="w-3.5 h-3.5 rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                        className={`w-3.5 h-3.5 rounded border-gray-300 focus:ring-private ${isEditPrivate ? 'text-private' : 'text-orange-600'}`}
                       />
                       <label htmlFor="editorIsPrivate" className="text-[10px] font-bold text-[#A0A0A0] flex items-center gap-1 cursor-pointer">
-                        {isEditPrivate ? <Lock className="w-3 h-3 text-orange-500" /> : <Globe className="w-3 h-3" />}
+                        {isEditPrivate ? <Lock className="w-3 h-3 text-private" /> : <Globe className="w-3 h-3" />}
                         Privé
                       </label>
                     </div>

@@ -586,7 +586,7 @@ export function DashboardLayout({
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
-                    className={`absolute right-0 top-12 w-56 bg-[#0A0503]/90 backdrop-blur-xl border border-white/5 rounded-2xl shadow-[0_10px_40px_-10px_${isPrivate ? 'rgba(0,191,165,0.2)' : 'rgba(249,115,22,0.2)'}] overflow-hidden z-50 p-2`}
+                    className={`absolute right-0 top-12 w-56 bg-[#0A0503]/90 backdrop-blur-xl border border-white/5 rounded-2xl ${isPrivate ? 'shadow-[0_10px_40px_-10px_rgba(0,191,165,0.2)]' : 'shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)]'} overflow-hidden z-50 p-2`}
                   >
                     <div className="px-4 py-3 border-b border-white/5 mb-2">
                       <p className="text-xs font-bold text-white">{userName}</p>

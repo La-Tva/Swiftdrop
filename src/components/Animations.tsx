@@ -82,7 +82,7 @@ export function AnimatedEmptyState({ type = "folder", isPrivate }: { type?: "fol
       <motion.div
         animate={{ scale: [0.8, 1.3], opacity: [0.3, 0] }}
         transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-        className="absolute inset-0 border border-orange-500/20 rounded-full shadow-[0_0_30px_rgba(249,115,22,0.15)]"
+        className={`absolute inset-0 border rounded-full ${isPrivate ? 'border-private/20 shadow-[0_0_30px_rgba(0,191,165,0.15)]' : 'border-orange-500/20 shadow-[0_0_30px_rgba(249,115,22,0.15)]'}`}
       />
     </div>
   );

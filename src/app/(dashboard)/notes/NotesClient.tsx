@@ -295,7 +295,7 @@ export function NotesClient({
               setIsNewPrivate(activeSpace === "private");
               setIsModalOpen(true);
             }}
-            className="flex flex-shrink-0 items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-full text-xs font-bold hover:scale-105 transition-all shadow-[0_4px_20px_rgba(249,115,22,0.3)]"
+            className={`flex flex-shrink-0 items-center gap-2 px-5 md:px-6 py-2.5 md:py-3 text-white rounded-full text-xs font-bold hover:scale-105 transition-all ${activeSpace === 'private' ? 'bg-gradient-to-r from-private to-private-accent shadow-[0_4px_20px_rgba(0,191,165,0.3)]' : 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-[0_4px_20px_rgba(249,115,22,0.3)]'}`}
           >
             <Plus className="w-4 h-4" />{" "}
             <span className="hidden sm:inline">Ajouter</span>
@@ -307,13 +307,13 @@ export function NotesClient({
       <div className="flex items-center gap-2 border-b border-white/10 mb-4 shrink-0">
         <button
           onClick={() => setActiveTab("link")}
-          className={`px-4 sm:px-6 py-2 md:py-3 text-xs md:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${activeTab === "link" ? "border-orange-500 text-orange-500" : "border-transparent text-[#A0A0A0] hover:text-white"}`}
+          className={`px-4 sm:px-6 py-2 md:py-3 text-xs md:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${activeTab === "link" ? (activeSpace === 'private' ? "border-private text-private" : "border-orange-500 text-orange-500") : "border-transparent text-[#A0A0A0] hover:text-white"}`}
         >
           <LinkIcon className="w-4 h-4" /> Liens
         </button>
         <button
           onClick={() => setActiveTab("doc")}
-          className={`px-4 sm:px-6 py-2 md:py-3 text-xs md:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${activeTab === "doc" ? "border-orange-500 text-orange-500" : "border-transparent text-[#A0A0A0] hover:text-white"}`}
+          className={`px-4 sm:px-6 py-2 md:py-3 text-xs md:text-sm font-bold flex items-center gap-2 border-b-2 transition-all ${activeTab === "doc" ? (activeSpace === 'private' ? "border-private text-private" : "border-orange-500 text-orange-500") : "border-transparent text-[#A0A0A0] hover:text-white"}`}
         >
           <FileText className="w-4 h-4" /> Documents
         </button>
@@ -416,7 +416,7 @@ export function NotesClient({
                               handleDownload(note);
                               setOpenMenuId(null);
                             }}
-                            className="flex items-center gap-2 px-3 py-2 text-xs font-bold text-orange-400 hover:bg-orange-500/10 transition-colors text-left hidden md:flex"
+                            className={`flex items-center gap-2 px-3 py-2 text-xs font-bold transition-colors text-left hidden md:flex ${note.isPrivate ? 'text-private hover:bg-private/10' : 'text-orange-400 hover:bg-orange-500/10'}`}
                           >
                             <Download className="w-3 h-3" /> Télécharger .txt
                           </button>
@@ -443,7 +443,7 @@ export function NotesClient({
                       href={note.content}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs md:text-sm text-orange-500 font-medium line-clamp-1 hover:underline mb-2"
+                      className={`text-xs md:text-sm font-medium line-clamp-1 hover:underline mb-2 ${note.isPrivate ? 'text-private' : 'text-orange-500'}`}
                     >
                       {note.content}
                     </a>
@@ -522,7 +522,7 @@ export function NotesClient({
                     value={newLabel}
                     onChange={(e) => setNewLabel(e.target.value)}
                     placeholder="Ex: Ressources UI..."
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
+                    className={`w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors ${isNewPrivate ? 'focus:border-private' : 'focus:border-orange-500'}`}
                   />
                 </div>
                 <div>
@@ -536,7 +536,7 @@ export function NotesClient({
                       value={newContent}
                       onChange={(e) => setNewContent(e.target.value)}
                       placeholder="https://..."
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
+                      className={`w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors ${isNewPrivate ? 'focus:border-private' : 'focus:border-orange-500'}`}
                     />
                   ) : (
                     <textarea
@@ -544,7 +544,7 @@ export function NotesClient({
                       value={newContent}
                       onChange={(e) => setNewContent(e.target.value)}
                       placeholder="Commencez à rédiger..."
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors min-h-[150px] resize-y custom-scrollbar"
+                      className={`w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors min-h-[150px] resize-y custom-scrollbar ${isNewPrivate ? 'focus:border-private' : 'focus:border-orange-500'}`}
                     />
                   )}
                 </div>
@@ -606,7 +606,7 @@ export function NotesClient({
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.98, y: 20 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className={`bg-[#0A0503] flex flex-col border border-white/10 shadow-[0_20px_80px_rgba(249,115,22,0.15)] relative overflow-hidden max-h-full
+              className={`bg-[#0A0503] flex flex-col border border-white/10 relative overflow-hidden max-h-full ${isEditPrivate ? 'shadow-[0_20px_80px_rgba(0,191,165,0.15)]' : 'shadow-[0_20px_80px_rgba(249,115,22,0.15)]'}
                 ${editingNote.type === "doc" ? "w-full h-full rounded-none md:rounded-3xl md:m-6 md:h-[calc(100vh-3rem)]" : "w-full max-w-lg rounded-3xl p-6"}
               `}
             >
@@ -631,7 +631,7 @@ export function NotesClient({
                         type="text"
                         value={editLabel}
                         onChange={(e) => setEditLabel(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
+                        className={`w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors ${isEditPrivate ? 'focus:border-private' : 'focus:border-orange-500'}`}
                       />
                     </div>
                     <div>
@@ -642,7 +642,7 @@ export function NotesClient({
                         type="url"
                         value={editContent}
                         onChange={(e) => setEditContent(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-orange-500 transition-colors"
+                        className={`w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none transition-colors ${isEditPrivate ? 'focus:border-private' : 'focus:border-orange-500'}`}
                       />
                     </div>
                     <div className={`flex items-center gap-3 bg-white/5 border rounded-xl px-4 py-3 transition-colors ${isEditPrivate ? 'border-private/50' : 'border-white/10'}`}>
@@ -668,7 +668,7 @@ export function NotesClient({
                       <button
                         onClick={handleUpdate}
                         disabled={isUpdating}
-                        className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 border border-orange-400 text-white rounded-xl font-bold text-sm flex items-center gap-2 shadow-[0_0_15px_#ea580c]"
+                        className={`px-5 py-2.5 text-white rounded-xl font-bold text-sm flex items-center gap-2 ${isEditPrivate ? 'bg-private hover:bg-private-accent border border-private/80 shadow-[0_0_15px_#00bfa5]' : 'bg-orange-500 hover:bg-orange-600 border border-orange-400 shadow-[0_0_15px_#ea580c]'}`}
                       >
                         {isUpdating ? (
                           <Loader2 className="w-4 h-4 animate-spin" />
@@ -696,7 +696,7 @@ export function NotesClient({
                         type="text"
                         value={editLabel}
                         onChange={(e) => setEditLabel(e.target.value)}
-                        className="bg-transparent text-lg md:text-xl font-bold text-white placeholder-[#A0A0A0] focus:outline-none w-full border-b border-transparent focus:border-orange-500/50 transition-colors px-2 py-1"
+                        className={`bg-transparent text-lg md:text-xl font-bold text-white placeholder-[#A0A0A0] focus:outline-none w-full border-b border-transparent transition-colors px-2 py-1 ${isEditPrivate ? 'focus:border-private/50' : 'focus:border-orange-500/50'}`}
                         placeholder="Titre du document..."
                       />
                     </div>

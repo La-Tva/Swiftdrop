@@ -470,7 +470,7 @@ export function SpaceClient({
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: -5 }}
                 transition={{ duration: 0.15 }}
-                className="absolute left-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)] border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left"
+                className={`absolute left-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left ${isGlobal ? 'shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)]' : 'shadow-[0_10px_40px_-10px_rgba(0,191,165,0.2)]'}`}
               >
                 <button
                   onClick={() => {
@@ -604,7 +604,7 @@ export function SpaceClient({
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: -5 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)] border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left"
+                      className={`absolute right-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left ${isGlobal ? 'shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)]' : 'shadow-[0_10px_40px_-10px_rgba(0,191,165,0.2)]'}`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
@@ -734,7 +734,7 @@ export function SpaceClient({
                       animate={{ opacity: 1, scale: 1, y: 0 }}
                       exit={{ opacity: 0, scale: 0.95, y: -5 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)] border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left"
+                      className={`absolute right-0 top-full mt-2 w-48 bg-[#0A0503]/90 backdrop-blur-xl rounded-2xl border border-white/5 flex flex-col overflow-hidden py-1 z-50 text-left ${isGlobal ? 'shadow-[0_10px_40px_-10px_rgba(249,115,22,0.2)]' : 'shadow-[0_10px_40px_-10px_rgba(0,191,165,0.2)]'}`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button
@@ -747,7 +747,7 @@ export function SpaceClient({
                       >
                         <InteractiveIconWrapper>
                           <Star
-                            className={`w-4 h-4 ${file.isFavorite ? "fill-orange-500 text-orange-500" : ""}`}
+                            className={`w-4 h-4 ${file.isFavorite ? (isGlobal ? "fill-orange-500 text-orange-500" : "fill-private text-private") : ""}`}
                           />
                         </InteractiveIconWrapper>{" "}
                         {file.isFavorite ? "Retirer" : "Favori"}
@@ -803,7 +803,7 @@ export function SpaceClient({
       {/* Empty State */}
       {folders.length === 0 && files.length === 0 && (
         <div className="py-24 flex flex-col items-center justify-center gap-8 text-center bg-[#0A0503]/40 backdrop-blur-xl rounded-[3rem] border border-white/5">
-          <AnimatedEmptyState type="folder" />
+          <AnimatedEmptyState type="folder" isPrivate={!isGlobal} />
           <div>
             <h2 className="text-2xl font-serif italic text-white">
               Cet espace est vide

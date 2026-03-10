@@ -599,7 +599,7 @@ app.get("/api/notes", async (req, res) => {
     const query = {
       $or: [
         { isPrivate: { $ne: true } },
-        { ownerId: userId ? new ObjectId(userId) : null },
+        { ownerId: { $in: [userId ? new ObjectId(userId) : null, userId] } },
       ],
     };
 
@@ -634,7 +634,7 @@ app.post("/api/notes", async (req, res) => {
     }
 
     const newNote = {
-      ownerId,
+      ownerId: ownerId && /^[0-9a-fA-F]{24}$/.test(ownerId) ? new ObjectId(ownerId) : ownerId,
       type,
       label,
       content,
